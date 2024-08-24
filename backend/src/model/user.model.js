@@ -1,0 +1,35 @@
+import mongoose from "mongoose";
+
+const UserSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      unique: true,
+      match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Valid Email is required"],
+      required : true
+    },
+    password : {
+        type : String,
+        required : true
+    },
+    name : {
+        type : "String",
+        required : true
+    },
+    lastLogin : {
+        type : Date,
+        default : Date.now()
+    },
+    isVerified : {
+        type : Boolean,
+        default : false
+    },
+    resetPassowordToken : String,
+    resetPassowordTokenExpiresAt : Date,
+    verificationToken : String,
+    verificationTokenExpiresAt : Date,
+  },
+  { timestamps: true }
+);
+
+export const User = mongoose.model("User",UserSchema)
