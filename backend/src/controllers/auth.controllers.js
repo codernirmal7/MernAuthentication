@@ -1,7 +1,7 @@
 import {
   sendVerificationEmail,
   sendWellcomeEmail,
-} from "../mailtrap/emails.js";
+} from "../nodemailer/emails.js";
 import { User } from "../model/user.model.js";
 import otpGenerator from "otp-generator";
 
@@ -59,8 +59,6 @@ const verifyEmail = async (req, res) => {
   const codeUrl = req.query.code;
 
   const { code } = req.body;
-
-
 
   if (!email) {
     return res.status(400).json({
