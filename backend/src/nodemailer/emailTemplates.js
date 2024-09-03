@@ -267,7 +267,7 @@ footer {
             </header>
             <main>
                 <div class="welcome-message">
-                    <p>Your account has been successfully created. We can’t wait for you to explore!</p>
+                    <p>Your account has been successfully created and verified. We can’t wait for you to explore!</p>
                     <a href="#" class="btn">Go to Dashboard</a>
                 </div>
             </main>
@@ -281,3 +281,234 @@ footer {
 
 
 `;
+
+export const loginCodeTemplate = (name,loginCode)=>{
+    return (
+        `
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: auto;
+            background: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .email-header {
+            background: #007BFF;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+            text-align: center;
+        }
+        .email-body h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #007BFF;
+        }
+        .email-body p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #555555;
+        }
+        .code {
+            display: inline-block;
+            font-size: 24px;
+            font-weight: bold;
+            background: #f1f1f1;
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: #007BFF;
+            margin-top: 10px;
+        }
+        .email-footer {
+            background: #f4f4f4;
+            color: #888888;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .email-footer a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .email-header h1, .email-body h2 {
+                font-size: 18px;
+            }
+            .email-body p {
+                font-size: 14px;
+            }
+            .code {
+                font-size: 20px;
+                padding: 8px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <h1>Your Login Code</h1>
+        </div>
+        <div class="email-body">
+            <h2>Hi ${name},</h2>
+            <p>We received a request to log in to your account from a new device. Please use the following code to complete your login:</p>
+            <div class="code">${loginCode}</div>
+            <p>If you did not request this login, you can ignore this email. If you have any questions, feel free to contact us.</p>
+        </div>
+        <div class="email-footer">
+            <p>Best regards,<br>Your Company</p>
+            <p><a href="#">Visit our website</a></p>
+        </div>
+    </div>
+</body>
+</html>
+
+`
+
+        
+    )
+}
+
+export  const loginNotificationTemplate = (userAgent, ipAddress,name)=>{
+    return (
+        `
+        <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid #dddddd;
+        }
+        .email-header {
+            background-color: #007BFF;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-body {
+            padding: 20px;
+            text-align: center;
+        }
+        .email-body h2 {
+            margin: 0;
+            font-size: 20px;
+            color: #007BFF;
+        }
+        .email-body p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555555;
+            margin-top: 10px;
+        }
+        .email-info {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+            font-size: 14px;
+            color: #333333;
+        }
+        .email-info strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #007BFF;
+        }
+        .email-footer {
+            background-color: #f4f4f4;
+            color: #888888;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .email-footer a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        @media (max-width: 600px) {
+            .email-header h1, .email-body h2 {
+                font-size: 18px;
+            }
+            .email-body p {
+                font-size: 14px;
+            }
+            .email-info {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Email Header -->
+        <div class="email-header">
+            <h1>Successful Login Notification</h1>
+        </div>
+
+        <!-- Email Body -->
+        <div class="email-body">
+            <h2>Hello ${name},</h2>
+            <p>We noticed a successful login to your account. Here are the details:</p>
+            
+            <!-- User Agent and IP Address Information -->
+            <div class="email-info">
+                <strong>Login Device Information:</strong>
+                <p>User Agent: <em>${userAgent}</em></p>
+                <p>IP Address: <em>${ipAddress}</em></p>
+            </div>
+
+            <p>If this was you, no further action is needed. If you didn't log in, please reset your password and secure your account immediately.</p>
+        </div>
+
+        <!-- Email Footer -->
+        <div class="email-footer">
+            <p>Stay secure, <br>Your Company</p>
+            <p><a href="#">Visit our website</a> | <a href="#">Contact support</a></p>
+        </div>
+    </div>
+</body>
+</html>
+
+        `
+    )
+}

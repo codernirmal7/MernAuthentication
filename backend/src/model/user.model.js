@@ -9,31 +9,53 @@ const UserSchema = new mongoose.Schema(
       type: String,
       unique: true,
       match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Valid Email is required"],
-      required: [true , "Email is required"],
+      required: [true, "Email is required"],
     },
     password: {
       type: String,
-      required: [true , "Password is required"],
-
+      required: [true, "Password is required"],
     },
     name: {
       type: "String",
-      required: [true , "Name is required"],
-
-    },
-    lastLogin: {
-      type: Date,
-      default: Date.now(),
+      required: [true, "Name is required"],
     },
     isVerified: {
       type: Boolean,
       default: false,
     },
+
+    loggedInDevice: [
+      {
+        userAgent: {
+          type: String,
+          required: [true, "UserAgent is required"],
+        }, // e.g., browser and OS details
+        ipAddress: {
+          type: String,
+          required: [true, "ipAddress is required"],
+
+        }, // IP address of the user
+        loginTime: {
+          type: Date,
+          required: [true, "Login time is required"],
+
+        }, // Timestamp of the login
+      },
+    ],
+
+    knownIPs: [
+      {
+        type: String,
+      },
+    ],
     resetPassowordToken: String,
     resetPassowordTokenExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
+    loginCode: String,
+    loginCodeExpiresAt: Date,
   },
+
   { timestamps: true }
 );
 
@@ -44,7 +66,7 @@ UserSchema.pre("save", async function (next) {
     const hashedPassword = await bcrypt.hash(this.password, 10);
     this.password = hashedPassword;
   } catch (error) {
-    next(error);
+    console.log(error)
   }
 });
 
