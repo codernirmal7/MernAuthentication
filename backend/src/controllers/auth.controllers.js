@@ -175,6 +175,14 @@ const signin = async (req, res) => {
       });
     }
 
+    if(user.isDisable){
+      return res.status(400).json({
+        success: false,
+        error: "Your account is disable.",
+        statusCode: 400,
+      });
+    }
+
     if (!user.knownIPs.includes(ipAddress)) {
       user.loginCode = loginCode;
       user.loginCodeExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
@@ -327,6 +335,13 @@ const forgetPassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         error: "Email address is not registered in our database",
+        statusCode: 400,
+      });
+    }
+    if(userExists.isDisable){
+      return res.status(400).json({
+        success: false,
+        error: "Your account is disable.",
         statusCode: 400,
       });
     }
@@ -570,7 +585,23 @@ const resendLoginCodeEmail = async (req,res)=>{
   }
 }
 
-
+const userData = async (req,res)=>{
+  try {
+    const userData = req.userData
+    return res.status(200).json({
+      success: true,
+      message: userData,
+      error : null,
+      statusCode: 200,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+      statusCode: 500,
+    });
+  }
+}
 
 export {
   signup,
@@ -580,5 +611,6 @@ export {
   forgetPassword,
   resetPassword,
   resendVerificationEmail,
-  resendLoginCodeEmail
+  resendLoginCodeEmail,
+  userData
 };

@@ -33,12 +33,10 @@ const UserSchema = new mongoose.Schema(
         ipAddress: {
           type: String,
           required: [true, "ipAddress is required"],
-
         }, // IP address of the user
         loginTime: {
           type: Date,
           required: [true, "Login time is required"],
-
         }, // Timestamp of the login
       },
     ],
@@ -48,11 +46,11 @@ const UserSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    oldPasswords : [
+    oldPasswords: [
       {
-        type : String,
-        required : true
-      }
+        type: String,
+        required: true,
+      },
     ],
     resetPasswordToken: String,
     resetPasswordTokenExpiresAt: Date,
@@ -60,12 +58,22 @@ const UserSchema = new mongoose.Schema(
     verificationTokenExpiresAt: Date,
     loginCode: String,
     loginCodeExpiresAt: Date,
+
+
+    isDisable : {
+      type : Boolean,
+      required : true,
+      default : false
+    },
+  
   },
-
-  { timestamps: true }
+  
+  {
+    timestamps: {
+      createdAt: true,
+    },
+  }
 );
-
-
 
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
@@ -73,6 +81,7 @@ UserSchema.methods.generateAccessToken = function () {
       id: this._id,
       email: this.email,
       name: this.name,
+      isDisable : this.isDisable
     },
     process.env.JWT_PRIVATE_KEY,
     { expiresIn: "7d" }
