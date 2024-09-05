@@ -1,6 +1,8 @@
 import {
   sendLoginCodeEmail,
   sendLoginNotification,
+  sendResetPasswordEmail,
+  sendResetPasswordSuccessfulEmail,
   sendVerificationEmail,
   sendWellcomeEmail,
 } from "../nodemailer/emails.js";
@@ -10,11 +12,7 @@ import otpGenerator from "otp-generator";
 
 const signup = async (req, res) => {
   const { email, password, name } = req.body;
-  const loggedInDevice = {
-    "userAgent" : "null",
-    "ipAddress" : "null",
-    "loginTime": new Date(),
-  };
+ 
   try {
     const isUserAlreadyExists = await User.findOne({ email });
     if (isUserAlreadyExists) {
@@ -29,14 +27,17 @@ const signup = async (req, res) => {
       specialChars: false,
     });
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const user = new User({
       email,
-      password,
+      password : hashedPassword,
       name,
       verificationToken: verificationCode,
       verificationTokenExpiresAt: Date.now() + 1 * 60 * 60 * 1000, //1 hours
-      loggedInDevice
     });
+
+    user.oldPasswords.push(hashedPassword)
 
     await user.save();
 
@@ -178,30 +179,25 @@ const signin = async (req, res) => {
       user.loginCode = loginCode;
       user.loginCodeExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
       user.save();
-      sendLoginCodeEmail(user.email, loginCode,user.name);
+      sendLoginCodeEmail(user.email, loginCode, user.name);
       return res.json({
         message: "New device deceted! Check your email for code.",
       });
     }
 
-       const data = []
-      
+    const data = [];
 
-      for (let i = 0; i < user.loggedInDevice.length; i++) {
-        if (
-          !user.loggedInDevice[i].ipAddress.includes(ipAddress)
-        ) {
-          data.push("not match")
-        }else{
-          data.push("match")
-        }
-        
+    for (let i = 0; i < user.loggedInDevice.length; i++) {
+      if (!user.loggedInDevice[i].ipAddress.includes(ipAddress)) {
+        data.push("not match");
+      } else {
+        data.push("match");
       }
-   
+    }
 
-      if(!data.includes("match")){
-          user.loggedInDevice.push(loggedInDevice);
-      }
+    if (!data.includes("match")) {
+      user.loggedInDevice.push(loggedInDevice);
+    }
 
     await user.save();
 
@@ -209,7 +205,7 @@ const signin = async (req, res) => {
       httpOnly: true,
       maxAge: Date.now() + 7 * 24 * 60 * 60 * 1000, //7days
     });
-    sendLoginNotification(user.email,userAgent,ipAddress,user.name)
+    sendLoginNotification(user.email, userAgent, ipAddress, user.name);
 
     return res.status(200).json({
       success: true,
@@ -228,6 +224,7 @@ const signin = async (req, res) => {
 const verifyLoginCode = async (req, res) => {
   const email = req.query.email;
   const { code, userAgent, ipAddress } = req.body;
+  
   const loggedInDevice = {
     userAgent,
     ipAddress,
@@ -238,7 +235,23 @@ const verifyLoginCode = async (req, res) => {
       return res.status(400).json({
         success: false,
 
-        error: "Verification code is required.",
+        error: "Login code is required.",
+        statusCode: 400,
+      });
+    }
+    if (!userAgent) {
+      return res.status(400).json({
+        success: false,
+
+        error: "User Agent is required.",
+        statusCode: 400,
+      });
+    }
+    if (!ipAddress) {
+      return res.status(400).json({
+        success: false,
+
+        error: "Ip address is required.",
         statusCode: 400,
       });
     }
@@ -258,27 +271,22 @@ const verifyLoginCode = async (req, res) => {
     user.loginCode = null;
     user.loginCodeExpiresAt = null;
 
+    const data = [];
 
-      const data = []
-      
-
-      for (let i = 0; i < user.loggedInDevice.length; i++) {
-        if (
-          !user.knownIPs.includes(ipAddress) &&
-          !user.loggedInDevice[i].ipAddress.includes(ipAddress)
-        ) {
-          data.push("not match")
-        }else{
-          data.push("match")
-        }
-        
+    for (let i = 0; i < user.loggedInDevice.length; i++) {
+      if (
+        !user.knownIPs.includes(ipAddress) &&
+        !user.loggedInDevice[i].ipAddress.includes(ipAddress)
+      ) {
+        data.push("not match");
+      } else {
+        data.push("match");
       }
-   
+    }
 
-      if(!data.includes("match")){
-          user.loggedInDevice.push(loggedInDevice);
-      }
-
+    if (!data.includes("match")) {
+      user.loggedInDevice.push(loggedInDevice);
+    }
 
     if (!user.knownIPs.includes(ipAddress)) {
       user.knownIPs.push(ipAddress);
@@ -286,7 +294,7 @@ const verifyLoginCode = async (req, res) => {
 
     await user.save();
 
-    sendLoginNotification(user.email,userAgent,ipAddress,user.name)
+    sendLoginNotification(user.email, userAgent, ipAddress, user.name);
 
     return res.status(200).json({
       success: true,
@@ -302,4 +310,275 @@ const verifyLoginCode = async (req, res) => {
   }
 };
 
-export { signup, verifyEmail, signin, verifyLoginCode };
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        error: "Please a enter email address",
+        statusCode: 400,
+      });
+    }
+  try {
+    
+    const userExists = await User.findOne({ email });
+
+    if (!userExists) {
+      return res.status(400).json({
+        success: false,
+        error: "Email address is not registered in our database",
+        statusCode: 400,
+      });
+    }
+   
+    const resetPasswordToken = otpGenerator.generate(25, {
+      upperCaseAlphabets: true,
+      specialChars: false,
+      digits: false,
+    });
+
+    userExists.resetPasswordToken = resetPasswordToken;
+    userExists.resetPasswordTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; //1 hours
+
+    await userExists.save();
+
+
+    sendResetPasswordEmail(email, resetPasswordToken, userExists.name);
+
+    return res.status(200).json({
+      success: true,
+      message: "Email send successful go and reset the password.",
+      statusCode: 200,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+      statusCode: 500,
+    });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { password, confirmPassword } = req.body;
+  const resetPasswordToken  = req.params.token;
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: resetPasswordToken.split(":")[1],
+      resetPasswordTokenExpiresAt: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        error: "Invalid or expired link.",
+        statusCode: 400,
+      });
+    }
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        error: "Please enter a password",
+        statusCode: 400,
+      });
+    }
+    if (!confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        error: "Please enter a confirm password",
+        statusCode: 400,
+      });
+    }
+    if(confirmPassword !== password ){
+      return res.status(400).json({
+        success: false,
+        error: "Confirm password must be match with password",
+        statusCode: 400,
+      });
+    }
+
+    const data = [];
+
+    for (let i = 0; i < user.oldPasswords.length; i++) {
+      if (await bcrypt.compare(password,user.oldPasswords[i])) {
+        data.push("match");
+      } else {
+        data.push("not match");
+      }
+    }
+
+    if (data.includes("match")) {
+      return res.status(400).json({
+        success: false,
+        error: "You have already used this password.",
+        statusCode: 400,
+      });
+    }
+    
+
+    user.resetPasswordToken = null;
+    user.resetPasswordTokenExpiresAt = null;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+
+    user.oldPasswords.push(hashedPassword)
+
+
+    await user.save();
+
+    sendResetPasswordSuccessfulEmail(user.email,user.name)
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successful.",
+      statusCode: 200,
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+      statusCode: 500,
+    });
+  }
+};
+
+const resendVerificationEmail = async (req,res)=>{
+  const {email} = req.body
+
+  if(!email){
+    return res.status(400).json({
+      success: false,
+      error: "Email is required",
+      statusCode: 400,
+    });
+  }
+  try {
+      
+    const userExists = await User.findOne({email})
+
+    if(!userExists){
+      return res.status(400).json({
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400,
+      });
+    }
+
+    if(userExists.isVerified){
+      return res.status(400).json({
+        success: false,
+        error: "Your email address is already verified",
+        statusCode: 400,
+      });
+    }
+
+    const verificationCode = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+  
+  
+    userExists.verificationToken = verificationCode
+    userExists.verificationTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000, //1 hours
+  
+    await userExists.save();
+  
+    await sendVerificationEmail(email, verificationCode);
+  
+    return res.status(200).json({
+      success: true,
+      message:
+        "Email verification mail was sent successful",
+      statusCode: 201,
+      error: null,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+      statusCode: 500,
+    });
+  }
+}
+
+
+const resendLoginCodeEmail = async (req,res)=>{
+  const {email,ipAddress} = req.body
+
+  if(!email){
+    return res.status(400).json({
+      success: false,
+      error: "Email is required",
+      statusCode: 400,
+    });
+  }
+
+
+  if(!ipAddress){
+    return res.status(400).json({
+      success: false,
+      error: "ipAddress is required",
+      statusCode: 400,
+    });
+  }
+
+  try {
+    const userExists = await User.findOne({email})
+
+    if(!userExists){
+      return res.status(400).json({
+        success: false,
+        error: "Invalid credentials.",
+        statusCode: 400,
+      });
+    }
+    if(userExists.knownIPs.includes(ipAddress)){
+      return res.status(400).json({
+        success: false,
+        error: "Unable to send Login send",
+        statusCode: 400,
+      });
+    }
+
+    const loginCode = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+  
+    userExists.loginCode = loginCode;
+    userExists.loginCodeExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
+    userExists.save();
+
+    sendLoginCodeEmail(email, loginCode, userExists.name);
+  
+    return res.status(200).json({
+      success: true,
+      message:
+        "Login code mail was sent successful",
+      statusCode: 201,
+      error: null,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+      statusCode: 500,
+    });
+  }
+}
+
+
+
+export {
+  signup,
+  verifyEmail,
+  signin,
+  verifyLoginCode,
+  forgetPassword,
+  resetPassword,
+  resendVerificationEmail,
+  resendLoginCodeEmail
+};

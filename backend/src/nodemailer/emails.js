@@ -2,6 +2,8 @@ import {
   emailVerificationTemplate,
   loginCodeTemplate,
   loginNotificationTemplate,
+  resetPasswordSuccessfulTemple,
+  resetPasswordTemplate,
   WELLCOME_EMAIL_TEMPLATE,
 } from "./emailTemplates.js";
 import "dotenv/config";
@@ -79,6 +81,47 @@ export const sendWellcomeEmail = async (email) => {
     subject: "Welcome to MernAuth!",
     html: WELLCOME_EMAIL_TEMPLATE,
     category: "Welcome Email",
+  };
+  try {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error while sending email", error);
+      } else {
+      }
+    });
+  } catch (error) {
+    console.log("Server error", error);
+  }
+};
+
+export const sendResetPasswordEmail = async (email,resetPasswordToken,name) => {
+  const mailOptions = {
+    from: sender,
+    to: email,
+    subject: "Reset Password",
+    html: resetPasswordTemplate(`${process.env.FRONTSIDE_URL}/auth/reset-password:${resetPasswordToken}`,name),
+    category: "Reset Password!",
+  };
+  try {
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Error while sending email", error);
+      } else {
+      }
+    });
+  } catch (error) {
+    console.log("Server error", error);
+  }
+};
+
+
+export const sendResetPasswordSuccessfulEmail = async (email,name) => {
+  const mailOptions = {
+    from: sender,
+    to: email,
+    subject: "Reset Password Successful",
+    html: resetPasswordSuccessfulTemple(name,`${process.env.FRONTSIDE_URL}/signin`),
+    category: "Reset Password Successful",
   };
   try {
     transporter.sendMail(mailOptions, (error, info) => {

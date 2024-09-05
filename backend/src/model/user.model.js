@@ -48,8 +48,14 @@ const UserSchema = new mongoose.Schema(
         type: String,
       },
     ],
-    resetPassowordToken: String,
-    resetPassowordTokenExpiresAt: Date,
+    oldPasswords : [
+      {
+        type : String,
+        required : true
+      }
+    ],
+    resetPasswordToken: String,
+    resetPasswordTokenExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
     loginCode: String,
@@ -59,16 +65,7 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) next();
 
-  try {
-    const hashedPassword = await bcrypt.hash(this.password, 10);
-    this.password = hashedPassword;
-  } catch (error) {
-    console.log(error)
-  }
-});
 
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
