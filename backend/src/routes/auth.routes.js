@@ -9,6 +9,7 @@ import {
   resendVerificationEmail,
   resendLoginCodeEmail,
   userData,
+  signout,
 } from "../controllers/auth.controllers.js";
 import verifyToken from "../middleware/verifyToken.middleware.js";
 const authRouter = express();
@@ -25,5 +26,7 @@ authRouter.route("/forget-password").post(forgetPassword);
 authRouter.route("/reset-password:token").post(resetPassword);
 
 authRouter.route("/user-data").get(verifyToken, userData);
+
+authRouter.route("/sign-out").get(signout)
 
 export default authRouter;

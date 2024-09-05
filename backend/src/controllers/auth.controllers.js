@@ -603,6 +603,24 @@ const userData = async (req,res)=>{
   }
 }
 
+const signout = async (req,res)=>{
+  try {
+    res.clearCookie("token")
+    return res.status(200).json({
+      success: true,
+      message: "Sign out successful.",
+      error : null,
+      statusCode: 200,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: error,
+      statusCode: 500,
+    });
+  }
+}
+
 export {
   signup,
   verifyEmail,
@@ -612,5 +630,6 @@ export {
   resetPassword,
   resendVerificationEmail,
   resendLoginCodeEmail,
-  userData
+  userData,
+  signout
 };
