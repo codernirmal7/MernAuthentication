@@ -36,13 +36,11 @@ authRouter.route("/google").get(passport.authenticate('google', { scope: ['profi
 
 // Route to handle the callback after Google authentication
 authRouter.route("/google/callback").get(
-  passport.authenticate('google', { failureRedirect: '/api/auth/signin', successRedirect: '/profile' }),
+  passport.authenticate('google', { failureRedirect: '/api/auth/signin' }),
   (req, res) => {
-    // You can handle additional logic after successful authentication here if needed
     res.redirect('/profile');
   }
 );
-
 
 // GitHub OAuth routes
 authRouter.route("/github").get(passport.authenticate('github', { scope: ['user:email'] }));
@@ -52,6 +50,5 @@ authRouter.route("/github/callback").get(
     res.redirect('/profile');
   }
 );
-
 
 export default authRouter;

@@ -12,6 +12,7 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
+
     },
     name: {
       type: "String",
@@ -24,20 +25,7 @@ const UserSchema = new mongoose.Schema(
  
     googleId: { type: String },
     githubId: { type: String },
-    loggedInDevice: [
-      {
-        userAgent: {
-          type: String,
-        }, // e.g., browser and OS details
-        ipAddress: {
-          type: String,
-        }, // IP address of the user
-        loginTime: {
-          type: Date,
-        }, // Timestamp of the login
-      },
-    ],
-
+   
     knownIPs: [
       {
         type: String,
@@ -69,17 +57,7 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-UserSchema.pre("save", function (next) {
-  if (!this.googleId && !this.password) {
-    // If it's not a Google sign-in, require password
-    return next(new Error("Password is required for sign-in"));
-  }
-  if(this.googleId){
-    this.isVerified = true
-  }
- 
-  next();
-});
+
 
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(

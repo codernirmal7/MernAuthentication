@@ -14,17 +14,17 @@ passport.use(new GoogleStrategy({
 async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await User.findOne({ email: profile.emails[0].value });
-
-    if (user) {
-     
-      user.googleId = profile.id; 
-      await user.save();
-    } else {
+    if (user && !user.googleId && !user.githubId) {
+      // User exists but has signed up with local strategy (email/password)
+      return done(null, false, { message: "Please sign in with your password because you signed up with email/password." });
+    } 
+    if(!user){
       user = await User.create({
         googleId: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value
       });
+      await user.save()
     }
     return done(null, user);
   } catch (err) {
@@ -43,15 +43,17 @@ passport.use(new GitHubStrategy({
 async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await User.findOne({ email: profile.emails[0].value });
-    if (user) {
-      user.githubId = profile.id;
-      await user.save();
-    } else {
+    if (user && !user.githubId && !user.googleId) {
+      // User exists but has signed up with local strategy (email/password)
+      return done(null, false, { message: "Please sign in with your password because you signed up with email/password." });
+    } 
+    if(!user){
       user = await User.create({
         githubId: profile.id,
         name: profile.displayName,
         email: profile.emails[0].value
       });
+      await user.save()
     }
     return done(null, user);
   } catch (err) {

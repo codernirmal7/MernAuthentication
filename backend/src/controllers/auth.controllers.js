@@ -12,6 +12,13 @@ import otpGenerator from "otp-generator";
 
 const signup = async (req, res) => {
   const { email, password, name } = req.body;
+  if(!password){
+    return res.status(400).json({
+      success: false,
+      error: "Password is required.",
+      statusCode: 400,
+    });
+  }
  
   try {
     const isUserAlreadyExists = await User.findOne({ email });
@@ -142,11 +149,7 @@ const signin = async (req, res) => {
   });
   try {
     const { email, password, ipAddress, userAgent } = req.body;
-    const loggedInDevice = {
-      userAgent,
-      ipAddress,
-      loginTime: new Date(),
-    };
+   
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -193,21 +196,7 @@ const signin = async (req, res) => {
       });
     }
 
-    const data = [];
-
-    for (let i = 0; i < user.loggedInDevice.length; i++) {
-      if (!user.loggedInDevice[i].ipAddress.includes(ipAddress)) {
-        data.push("not match");
-      } else {
-        data.push("match");
-      }
-    }
-
-    if (!data.includes("match")) {
-      user.loggedInDevice.push(loggedInDevice);
-    }
-
-    await user.save();
+   
 
     res.cookie("token", user.generateAccessToken(), {
       httpOnly: true,
@@ -233,11 +222,7 @@ const verifyLoginCode = async (req, res) => {
   const email = req.query.email;
   const { code, userAgent, ipAddress } = req.body;
   
-  const loggedInDevice = {
-    userAgent,
-    ipAddress,
-    loginTime: new Date(),
-  };
+ 
   try {
     if (!code) {
       return res.status(400).json({
@@ -258,7 +243,6 @@ const verifyLoginCode = async (req, res) => {
     if (!ipAddress) {
       return res.status(400).json({
         success: false,
-
         error: "Ip address is required.",
         statusCode: 400,
       });
@@ -279,22 +263,6 @@ const verifyLoginCode = async (req, res) => {
     user.loginCode = null;
     user.loginCodeExpiresAt = null;
 
-    const data = [];
-
-    for (let i = 0; i < user.loggedInDevice.length; i++) {
-      if (
-        !user.knownIPs.includes(ipAddress) &&
-        !user.loggedInDevice[i].ipAddress.includes(ipAddress)
-      ) {
-        data.push("not match");
-      } else {
-        data.push("match");
-      }
-    }
-
-    if (!data.includes("match")) {
-      user.loggedInDevice.push(loggedInDevice);
-    }
 
     if (!user.knownIPs.includes(ipAddress)) {
       user.knownIPs.push(ipAddress);

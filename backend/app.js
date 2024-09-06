@@ -25,8 +25,7 @@ app.get('/profile', (req, res) => {
     if (!req.isAuthenticated) {
       return res.redirect('/');
     }
-    // res.send(`Hello, ${req.user.name}`);
-    console.log(req.user)
+    res.send(`Hello, ${req.user.name}`);
   });
   
   // Logout
