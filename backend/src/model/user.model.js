@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
 
@@ -13,7 +12,6 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
     },
     name: {
       type: "String",
@@ -23,20 +21,19 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-
+ 
+    googleId: { type: String },
+    githubId: { type: String },
     loggedInDevice: [
       {
         userAgent: {
           type: String,
-          required: [true, "UserAgent is required"],
         }, // e.g., browser and OS details
         ipAddress: {
           type: String,
-          required: [true, "ipAddress is required"],
         }, // IP address of the user
         loginTime: {
           type: Date,
-          required: [true, "Login time is required"],
         }, // Timestamp of the login
       },
     ],
@@ -49,7 +46,6 @@ const UserSchema = new mongoose.Schema(
     oldPasswords: [
       {
         type: String,
-        required: true,
       },
     ],
     resetPasswordToken: String,
@@ -59,15 +55,13 @@ const UserSchema = new mongoose.Schema(
     loginCode: String,
     loginCodeExpiresAt: Date,
 
-
-    isDisable : {
-      type : Boolean,
-      required : true,
-      default : false
+    isDisable: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
-  
   },
-  
+
   {
     timestamps: {
       createdAt: true,
@@ -75,13 +69,25 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
+UserSchema.pre("save", function (next) {
+  if (!this.googleId && !this.password) {
+    // If it's not a Google sign-in, require password
+    return next(new Error("Password is required for sign-in"));
+  }
+  if(this.googleId){
+    this.isVerified = true
+  }
+ 
+  next();
+});
+
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
       id: this._id,
       email: this.email,
       name: this.name,
-      isDisable : this.isDisable
+      isDisable: this.isDisable,
     },
     process.env.JWT_PRIVATE_KEY,
     { expiresIn: "7d" }
