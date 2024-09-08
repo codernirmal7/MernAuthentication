@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+
+  color: rgba(255, 255, 255, 0.87);
+
+  overflow: hidden;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.signupWrapper {
+  transition: all 0.18s ease;
+  /* From https://css.glass */
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+}
+
+.signinWrapper{
+  transition: all 0.18s ease;
+  /* From https://css.glass */
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+}
+
+.signinWrapper.popUp{
+  transform: scale(1);
+}
+
+.signupWrapper.popUp{
+  transform: scale(1);
+}
+
+/* .signupContainer{
+  transition: all .18s ease-in;
+}
+
+.oauthConatiner{
+  transition: all .18s ease-in;
+} */
+
+@media (max-width: 570px) {
+  .signUpWrapper {
+    box-shadow: none /* 32px */;
+    background: none;
+    border-radius: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+  }
+  .signupContainer {
+    padding: 14px;
+  }
+  .oauthContainer{
+    padding: 14px;
+  }
+}
