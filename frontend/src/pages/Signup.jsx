@@ -94,13 +94,14 @@ export function Signup() {
                   <button
                     className="relative group/btn  block bg-gray-400 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
                     onClick={onClickOauth}
+                    type="button"
                   >
-                    Sign up with OAuth &rarr;
+                    Sign up using OAuth &rarr;
                     <BottomGradient />
                   </button>
                 </div>
                 <div className="mt-3">
-                  <span className="text-black dark:text-neutral-300">
+                  <span className="text-black dark:text-neutral-300 text-sm">
                     Already Have an account ?{" "}
                     <Link
                       to="/signin"
