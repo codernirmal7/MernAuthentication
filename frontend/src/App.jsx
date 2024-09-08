@@ -29,7 +29,7 @@ function App() {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-gray-900 via-green-900 to-emerald-700">
+      <div className="bg-gradient-to-br from-gray-900 via-green-900 to-emerald-700 flex items-center justify-center relative overflow-hidden">
         <FloatingShape
           color="bg-green-500"
           size="w-64 h-64"

@@ -21,7 +21,7 @@ export default function Signin() {
     <>
       <div className="w-full h-screen flex justify-center  items-center ">
         <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input signinWrapper relative overflow-hidden p-5">
-          <div className="w-full  p-4 px-6 ">
+          <div className="w-full  p-4 px-2 ">
             <div>
               <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
                 Welcome to Back!

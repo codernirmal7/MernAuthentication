@@ -8,7 +8,6 @@
 
   color: rgba(255, 255, 255, 0.87);
 
-  overflow: hidden;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -22,7 +21,6 @@
 
 .signupWrapper {
   transition: all 0.18s ease;
-  /* From https://css.glass */
   background: rgba(0, 0, 0, 0.18);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -35,7 +33,6 @@
 
 .signinWrapper{
   transition: all 0.18s ease;
-  /* From https://css.glass */
   background: rgba(0, 0, 0, 0.18);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
@@ -63,8 +60,7 @@
 } */
 
 @media (max-width: 570px) {
-  .signUpWrapper {
-    box-shadow: none /* 32px */;
+  .signupWrapper {
     background: none;
     border-radius: none;
     box-shadow: none;
@@ -72,10 +68,20 @@
     -webkit-backdrop-filter: none;
     border: none;
   }
+  .signinWrapper {
+    background: none;
+    border-radius: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    
+  }
   .signupContainer {
     padding: 14px;
   }
   .oauthContainer{
     padding: 14px;
   }
+ 
 }
