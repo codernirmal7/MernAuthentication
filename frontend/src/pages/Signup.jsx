@@ -42,7 +42,7 @@ export function Signup() {
   
   return (
     <>
-      <div className="w-full h-screen flex justify-center  items-center ">
+      <div className="w-full h-screen flex justify-center  items-center px-3">
         <div
           className="max-w-md w-full mx-auto transition ease-in-out delay-300 flex justify-center rounded-2xl shadow-input signupWrapper relative overflow-hidden p-5"
           style={{height : 

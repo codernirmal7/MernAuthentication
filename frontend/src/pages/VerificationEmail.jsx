@@ -98,7 +98,7 @@ export default function VerificationEmail() {
 
   return (
     <>
-      <div className="w-full h-screen flex justify-center  items-center px-4">
+      <div className="w-full h-screen flex justify-center  items-center px-3">
         <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input verificationEmailWrapper relative overflow-hidden p-5">
           <div className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 ">
             <div>

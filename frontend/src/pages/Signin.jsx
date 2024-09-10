@@ -39,7 +39,7 @@ export default function Signin() {
   });
   return (
     <>
-      <div className="w-full h-screen flex justify-center  items-center "
+      <div className="w-full h-screen flex justify-center  items-center px-3"
       >
         <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input signinWrapper relative overflow-hidden p-5"
          style={{height : 
@@ -77,7 +77,7 @@ export default function Signin() {
                 <div className="mb-4">
                   
                     <Link
-                      to="/reset-password"
+                      to="/forget-password"
                       className="text-green-600 hover:underline font-semibold text-sm"
                     >
                       Forget password?

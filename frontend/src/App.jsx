@@ -4,6 +4,7 @@ import FloatingShape from "./components/FloatingShape";
 import { Signup } from "./pages/Signup";
 import Signin from "./pages/Signin";
 import VerificationEmail from "./pages/VerificationEmail";
+import ForgetPassword from "./pages/ForgetPassword";
 
 function App() {
 
@@ -29,6 +30,14 @@ function App() {
       element: (
         <>
           <VerificationEmail />
+        </>
+      ),
+    },
+    {
+      path: "/forget-password",
+      element: (
+        <>
+          <ForgetPassword />
         </>
       ),
     },
