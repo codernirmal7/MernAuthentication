@@ -102,3 +102,7 @@
 .resetPasswordWrapper.popUp{
   transform: scale(1);
 }
+
+button{
+  user-select: none;
+}

@@ -6,6 +6,7 @@ import Signin from "./pages/Signin";
 import VerificationEmail from "./pages/VerificationEmail";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
+import NotFound from "./pages/NotFound";
 
 function App() {
 
@@ -47,6 +48,14 @@ function App() {
       element: (
         <>
           <ResetPassword />
+        </>
+      ),
+    },
+    {
+      path: "*",
+      element: (
+        <>
+          <NotFound />
         </>
       ),
     },
