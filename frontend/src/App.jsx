@@ -3,6 +3,7 @@ import "./App.css";
 import FloatingShape from "./components/FloatingShape";
 import { Signup } from "./pages/Signup";
 import Signin from "./pages/Signin";
+import VerificationEmail from "./pages/VerificationEmail";
 
 function App() {
 
@@ -23,7 +24,14 @@ function App() {
         </>
       ),
     },
-  
+    {
+      path: "/verify-email",
+      element: (
+        <>
+          <VerificationEmail />
+        </>
+      ),
+    },
   ]);
 
 

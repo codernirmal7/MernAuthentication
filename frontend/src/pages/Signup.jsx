@@ -30,6 +30,8 @@ export function Signup() {
     setShowSignUpContainer(true)
   };
 
+
+  //this animation for signupWrapper
   useEffect(()=>{
     setTimeout(()=>{
       const signupWrapper = document.querySelector(".signupWrapper")
@@ -54,7 +56,7 @@ export function Signup() {
         >
           <div className="w-full  p-4 px-6 absolute transition ease-in-out delay-100 signupContainer" style={{transform : showSignUpContainer ? "translateX(0px)" : "translateX(-700px)"}}>
             <div>
-              <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+              <h2 className="font-bold text-xl dark:text-green-700">
                 Welcome to Mern Auth
               </h2>
               <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
@@ -84,7 +86,7 @@ export function Signup() {
 
                 <div className="flex flex-col gap-2 ">
                   <button
-                    className="relative group/btn block bg-brand hover:bg-brand/80 w-full text-white rounded-md h-10 font-medium"
+                    className="relative group/btn block bg-gradient-to-br from-brand via-green-700  hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 to-emerald-900 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
                   >
                     Sign up &rarr;
@@ -116,7 +118,7 @@ export function Signup() {
           </div>
 
           <div className="w-full flex-col px-6 space-y-4 p-4 absolute transition ease-in-out delay-100 oauthContainer" style={{transform : showOauthContainer ? "translateX(0px)" : "translateX(700px)"}}>
-          <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
+          <h2 className="font-bold text-xl  dark:text-green-700">
                 Welcome to Mern Auth
               </h2>
               <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
@@ -155,7 +157,7 @@ export function Signup() {
             </button>
 
             <button
-              className="relative group/btn from-gray-300 bg-brand hover:bg-brand/80 w-full text-white rounded-md h-10 font-medium "
+              className="relative group/btn  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium "
               onClick={onClickBack}
             >
               Back &rarr;
