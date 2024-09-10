@@ -5,6 +5,7 @@ import { Signup } from "./pages/Signup";
 import Signin from "./pages/Signin";
 import VerificationEmail from "./pages/VerificationEmail";
 import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
 
@@ -38,6 +39,14 @@ function App() {
       element: (
         <>
           <ForgetPassword />
+        </>
+      ),
+    },
+    {
+      path: "/reset-password/:resetPasswordToken",
+      element: (
+        <>
+          <ResetPassword />
         </>
       ),
     },
