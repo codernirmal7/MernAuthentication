@@ -31,6 +31,7 @@ export function Signup() {
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {
+      sessionStorage.setItem('fromRedirect', 'true');
       navigate(`/verify-email?email=${userData.email}`);
       dispatch(updateStatus("idel"));
     } else {
@@ -85,7 +86,7 @@ export function Signup() {
       const signupWrapper = document.querySelector(".signupWrapper");
       signupWrapper.classList.add("popUp");
     }, 50);
-  });
+  },[]);
 
   return (
     <>

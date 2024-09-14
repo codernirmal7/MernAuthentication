@@ -25,7 +25,7 @@ export default function ResetPassword() {
       const resetPasswordWrapper = document.querySelector(".resetPasswordWrapper");
       resetPasswordWrapper.classList.add("popUp");
     }, 50);
-  });
+  },[]);
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3">

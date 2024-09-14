@@ -8,15 +8,85 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signin, updateStatus } from "../redux/slices/authSlice";
+import ErrorAlert from "../components/ErrorAlert";
+import SuccessAlert from "../components/SuccessAlert";
+import axios from "axios";
 
 export default function Signin() {
   const [showOauthContainer , setShowOauthContainer] = useState(false)
   const [showSignInContainer , setShowSignInContainer] = useState(true)
+  const [showErrorAlert, setShowErrorAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const [showSuccessAlert, setShowSuccessAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const dispatch = useDispatch();
+  const authInitialData = useSelector((state) => state.auth);
+
+  const navigate = useNavigate()
+
+  const [ip, setIp] = useState('');
+  useEffect(() => {
+    const fetchIPAddress = async () => {
+      try {
+        const response = await axios.get('https://api.ipify.org?format=json');
+        setIp(response.data.ip);
+      } catch (error) {
+        console.error('Error fetching IP address:', error);
+      }
+    };
+
+    fetchIPAddress();
+  }, []);
+
+  useEffect(() => {
+    if (authInitialData.status == "succeeded") {
+      setShowSuccessAlert({
+        isShow: true,
+        message: "Sinin successful.",
+      }),
+        setTimeout(() => {
+          setShowSuccessAlert({
+            isShow: false,
+            message: "",
+          });
+          navigate('/')
+        }, 3000);
+      dispatch(updateStatus("idel"));
+    } else {
+      if (authInitialData.status == "failed") {
+        setShowErrorAlert({
+          isShow: true,
+          message: authInitialData.error,
+        }),
+          setTimeout(() => {
+            setShowErrorAlert({
+              isShow: false,
+              message: "",
+            });
+          }, 3000);
+      }
+    }
+  }, [authInitialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const { name, email, password } = e.target;
+    dispatch(
+      signin({
+        email: email.value,
+        password: password.value,
+        ipAddress : ip,
+        userAgent : navigator.userAgent
+      })
+    );
+    console.log(ip)
   };
 
   const onClickOauth = () => {
@@ -36,7 +106,7 @@ export default function Signin() {
       const signinWrapper = document.querySelector(".signinWrapper");
       signinWrapper.classList.add("popUp");
     }, 50);
-  });
+  },[]);
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3"
@@ -170,6 +240,16 @@ export default function Signin() {
             </button>
           </div>
         </div>
+        <ErrorAlert
+          showErrorAlert={showErrorAlert}
+          setShowSuccessAlert={setShowErrorAlert}
+          message={showErrorAlert.message}
+        />
+        <SuccessAlert
+          showSuccessAlert={showSuccessAlert}
+          setShowSuccessAlert={setShowSuccessAlert}
+          message={showSuccessAlert.message}
+        />
       </div>
     </>
   );

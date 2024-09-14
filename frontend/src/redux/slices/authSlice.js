@@ -27,7 +27,18 @@ const verifyEmail = createAsyncThunk("/api/auth/verify-email", async (data) => {
   }
 });
 
-
+const signin = createAsyncThunk("/api/auth/signin", async (userData) => {
+  try {
+    const response = await axios.post("/api/auth/signin", userData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data.message;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+});
 
 
 
@@ -70,10 +81,23 @@ const authSlice = createSlice({
       .addCase(verifyEmail.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message;
-      });
+      })
+     .addCase(signin.pending, (state) => {
+        state.status = "loading";
+        state.error = null
+      })
+      .addCase(signin.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.error = null
+      })
+      .addCase(signin.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+     
   },
 });
 
 export const { updateStatus } = authSlice.actions;
 export default authSlice.reducer;
-export {signup,verifyEmail}
+export {signup,verifyEmail,signin}

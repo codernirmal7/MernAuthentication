@@ -23,7 +23,7 @@ export default function ForgetPassword() {
       const forgetPasswordWrapper = document.querySelector(".forgetPasswordWrapper");
       forgetPasswordWrapper.classList.add("popUp");
     }, 50);
-  });
+  },[]);
   
   return (
     <>

@@ -11,34 +11,42 @@ export default function VerificationEmail() {
     isShow: false,
     message: "",
   });
+  const fromRedirect = sessionStorage.getItem("fromRedirect");
 
-  
   const [inputBorder, setInputBorder] = useState("none");
 
-  
   const [code, setCode] = useState(new Array(6).fill(""));
   const inputRefs = useRef([]);
 
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [ip, setIp] = useState('');
+  const [ip, setIp] = useState("");
+
+  useEffect(() => {
+    if (!fromRedirect) {
+      console.log("Direct access with email:", email);
+      navigate("/");
+    } else {
+      sessionStorage.removeItem("fromRedirect");
+    }
+  }, [fromRedirect]);
 
   const authInitialData = useSelector((state) => state.auth);
+
   const [showErrorAlert, setShowErrorAlert] = useState({
     isShow: false,
     message: "",
   });
   const [searchParams] = useSearchParams();
-  const email = searchParams.get('email');
+  const email = searchParams.get("email");
 
   useEffect(() => {
     const fetchIPAddress = async () => {
       try {
-        const response = await axios.get('https://api.ipify.org?format=json');
+        const response = await axios.get("https://api.ipify.org?format=json");
         setIp(response.data.ip);
       } catch (error) {
-        console.error('Error fetching IP address:', error);
+        console.error("Error fetching IP address:", error);
       }
     };
 
@@ -60,10 +68,10 @@ export default function VerificationEmail() {
         });
         navigate("/");
       }, 3000);
-      setInputBorder("none")
+      setInputBorder("none");
     } else {
       if (authInitialData.status == "failed") {
-        setInputBorder("red")
+        setInputBorder("red");
         setShowErrorAlert({
           isShow: true,
           message: authInitialData.error,
@@ -78,29 +86,27 @@ export default function VerificationEmail() {
     }
   }, [authInitialData]);
 
-
-  function codeString (){
-    let result = ""
-    for(let i =0;i <code.toString().length; i++){
-       if(i % 2 == 0){
-          result += code.toString()[i]
-       }
+  function codeString() {
+    let result = "";
+    for (let i = 0; i < code.toString().length; i++) {
+      if (i % 2 == 0) {
+        result += code.toString()[i];
+      }
     }
-    return result
+    return result;
   }
 
-  function onCodeSubmit (){
+  function onCodeSubmit() {
     const arrayData = [
       {
-        email : email
+        email: email,
       },
       {
-        code : codeString(),
-        ipAddress : ip
-      }
-    ]
-    dispatch(verifyEmail(arrayData))
-    
+        code: codeString(),
+        ipAddress: ip,
+      },
+    ];
+    dispatch(verifyEmail(arrayData));
   }
 
   const [resendEmailDelay, setResendEmailDelay] = useState(0);
@@ -184,6 +190,20 @@ export default function VerificationEmail() {
     };
   }, [resendEmailDelay]);
 
+  const onResendVerificationEmail = async () => {
+    setShowSuccessAlert({
+      isShow: true,
+      message: "A verification email has been sent to your email.",
+    }),
+      setResendEmailDelay(8);
+    setTimeout(() => {
+      setShowSuccessAlert({
+        isShow: false,
+        message: "",
+      });
+    }, 3000);
+    dispatch(resendVerificationEmail(email));
+  };
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3">
@@ -267,20 +287,7 @@ export default function VerificationEmail() {
                 {resendEmailDelay == 0 ? (
                   <span
                     className="text-green-500 font-normal hover:underline cursor-pointer  text-sm"
-                    onClick={() => {
-                      setShowSuccessAlert({
-                        isShow: true,
-                        message:
-                          "A verification email has been sent to your email.",
-                      }),
-                        setResendEmailDelay(8);
-                      setTimeout(() => {
-                        setShowSuccessAlert({
-                          isShow: false,
-                          message: "",
-                        });
-                      }, 3000);
-                    }}
+                    onClick={onResendVerificationEmail}
                   >
                     Resend verification mail?
                   </span>
@@ -298,7 +305,7 @@ export default function VerificationEmail() {
           setShowSuccessAlert={setShowSuccessAlert}
           message={showSuccessAlert.message}
         />
-         <ErrorAlert
+        <ErrorAlert
           showErrorAlert={showErrorAlert}
           setShowSuccessAlert={setShowErrorAlert}
           message={showErrorAlert.message}
