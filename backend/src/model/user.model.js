@@ -4,6 +4,10 @@ import "dotenv/config";
 
 const UserSchema = new mongoose.Schema(
   {
+    name: {
+      type: "String",
+      required: [true, "Name is required"],
+    },
     email: {
       type: String,
       unique: true,
@@ -12,11 +16,7 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-
-    },
-    name: {
-      type: "String",
-      required: [true, "Name is required"],
+      required: [true, "Password is required"],
     },
     isVerified: {
       type: Boolean,

@@ -3,11 +3,9 @@ import {
   signup,
   verifyEmail,
   signin,
-  verifyLoginCode,
   forgetPassword,
   resetPassword,
   resendVerificationEmail,
-  resendLoginCodeEmail,
   userData,
   signout,
 } from "../controllers/auth.controllers.js";
@@ -20,8 +18,6 @@ authRouter.route("/verify").post(verifyEmail);
 authRouter.route("/resend-verification-email").post(resendVerificationEmail);
 
 authRouter.route("/signin").post(signin);
-authRouter.route("/verify-login-code").post(verifyLoginCode);
-authRouter.route("/resend-login-code").post(resendLoginCodeEmail);
 
 authRouter.route("/forget-password").post(forgetPassword);
 authRouter.route("/reset-password/:token").post(resetPassword);

@@ -11,16 +11,15 @@ import bcrypt from "bcrypt";
 import otpGenerator from "otp-generator";
 
 const signup = async (req, res) => {
-  const { email, password, name } = req.body;
-  if(!password){
-    return res.status(400).json({
-      success: false,
-      error: "Password is required.",
-      statusCode: 400,
-    });
-  }
- 
+  const {name, email, password } = req.body;
   try {
+    if(password.length <8){
+      return res.status(400).json({
+        success: false,
+        error: "Password length must be greater 8.",
+        statusCode: 400,
+      });
+    }
     const isUserAlreadyExists = await User.findOne({ email });
     if (isUserAlreadyExists) {
       return res.status(400).json({
@@ -30,8 +29,10 @@ const signup = async (req, res) => {
       });
     }
     const verificationCode = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
+      digits : true,
+      lowerCaseAlphabets : false,
+      upperCaseAlphabets : false,
+      specialChars : false
     });
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,6 +50,7 @@ const signup = async (req, res) => {
     await user.save();
 
     await sendVerificationEmail(user.email, verificationCode);
+
 
     return res.status(200).json({
       success: true,
@@ -140,12 +142,16 @@ const verifyEmail = async (req, res) => {
 
 const signin = async (req, res) => {
   const verificationCode = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false,
+    digits : true,
+    lowerCaseAlphabets : false,
+    upperCaseAlphabets : false,
+    specialChars : false
   });
   const loginCode = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false,
+    digits : true,
+    lowerCaseAlphabets : false,
+    upperCaseAlphabets : false,
+    specialChars : false
   });
   try {
     const { email, password, ipAddress, userAgent } = req.body;
@@ -186,22 +192,15 @@ const signin = async (req, res) => {
       });
     }
 
-    if (!user.knownIPs.includes(ipAddress)) {
-      user.loginCode = loginCode;
-      user.loginCodeExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
-      user.save();
-      sendLoginCodeEmail(user.email, loginCode, user.name);
-      return res.json({
-        message: "New device deceted! Check your email for code.",
-      });
-    }
+   
 
    
 
     res.cookie("token", user.generateAccessToken(), {
-      httpOnly: true,
+      // httpOnly: true,
       maxAge: Date.now() + 7 * 24 * 60 * 60 * 1000, //7days
     });
+
     sendLoginNotification(user.email, userAgent, ipAddress, user.name);
 
     return res.status(200).json({
@@ -218,73 +217,7 @@ const signin = async (req, res) => {
   }
 };
 
-const verifyLoginCode = async (req, res) => {
-  const email = req.query.email;
-  const { code, userAgent, ipAddress } = req.body;
-  
- 
-  try {
-    if (!code) {
-      return res.status(400).json({
-        success: false,
 
-        error: "Login code is required.",
-        statusCode: 400,
-      });
-    }
-    if (!userAgent) {
-      return res.status(400).json({
-        success: false,
-
-        error: "User Agent is required.",
-        statusCode: 400,
-      });
-    }
-    if (!ipAddress) {
-      return res.status(400).json({
-        success: false,
-        error: "Ip address is required.",
-        statusCode: 400,
-      });
-    }
-    const user = await User.findOne({
-      loginCode: code,
-      loginCodeExpiresAt: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        error: "Invalid or expired verification code.",
-        statusCode: 400,
-      });
-    }
-
-    user.loginCode = null;
-    user.loginCodeExpiresAt = null;
-
-
-    if (!user.knownIPs.includes(ipAddress)) {
-      user.knownIPs.push(ipAddress);
-    }
-
-    await user.save();
-
-    sendLoginNotification(user.email, userAgent, ipAddress, user.name);
-
-    return res.status(200).json({
-      success: true,
-      message: "Login verification successful.",
-      statusCode: 200,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      error: error,
-      statusCode: 500,
-    });
-  }
-};
 
 const forgetPassword = async (req, res) => {
   const { email } = req.body;
@@ -315,9 +248,10 @@ const forgetPassword = async (req, res) => {
     }
    
     const resetPasswordToken = otpGenerator.generate(25, {
-      upperCaseAlphabets: true,
-      specialChars: false,
-      digits: false,
+      digits : true,
+      lowerCaseAlphabets : false,
+      upperCaseAlphabets : false,
+      specialChars : false
     });
 
     userExists.resetPasswordToken = resetPasswordToken;
@@ -459,8 +393,10 @@ const resendVerificationEmail = async (req,res)=>{
     }
 
     const verificationCode = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
+      digits : true,
+      lowerCaseAlphabets : false,
+      upperCaseAlphabets : false,
+      specialChars : false
     });
   
   
@@ -488,70 +424,6 @@ const resendVerificationEmail = async (req,res)=>{
 }
 
 
-const resendLoginCodeEmail = async (req,res)=>{
-  const {email,ipAddress} = req.body
-
-  if(!email){
-    return res.status(400).json({
-      success: false,
-      error: "Email is required",
-      statusCode: 400,
-    });
-  }
-
-
-  if(!ipAddress){
-    return res.status(400).json({
-      success: false,
-      error: "ipAddress is required",
-      statusCode: 400,
-    });
-  }
-
-  try {
-    const userExists = await User.findOne({email})
-
-    if(!userExists){
-      return res.status(400).json({
-        success: false,
-        error: "Invalid credentials.",
-        statusCode: 400,
-      });
-    }
-    if(userExists.knownIPs.includes(ipAddress)){
-      return res.status(400).json({
-        success: false,
-        error: "Unable to send Login send",
-        statusCode: 400,
-      });
-    }
-
-    const loginCode = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
-    });
-  
-    userExists.loginCode = loginCode;
-    userExists.loginCodeExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
-    userExists.save();
-
-    sendLoginCodeEmail(email, loginCode, userExists.name);
-  
-    return res.status(200).json({
-      success: true,
-      message:
-        "Login code mail was sent successful",
-      statusCode: 201,
-      error: null,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      error: error,
-      statusCode: 500,
-    });
-  }
-}
 
 const userData = async (req,res)=>{
   try {
@@ -593,11 +465,9 @@ export {
   signup,
   verifyEmail,
   signin,
-  verifyLoginCode,
   forgetPassword,
   resetPassword,
   resendVerificationEmail,
-  resendLoginCodeEmail,
   userData,
   signout
 };
