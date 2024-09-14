@@ -49,7 +49,7 @@ export default function Signin() {
     if (authInitialData.status == "succeeded") {
       setShowSuccessAlert({
         isShow: true,
-        message: "Sinin successful.",
+        message: "Signin successful , We'll redirecting you in home page.",
       }),
         setTimeout(() => {
           setShowSuccessAlert({

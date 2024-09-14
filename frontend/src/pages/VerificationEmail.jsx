@@ -29,7 +29,7 @@ export default function VerificationEmail() {
     } else {
       sessionStorage.removeItem("fromRedirect");
     }
-  }, [fromRedirect]);
+  }, []);
 
   const authInitialData = useSelector((state) => state.auth);
 
@@ -59,7 +59,7 @@ export default function VerificationEmail() {
       setShowSuccessAlert({
         isShow: true,
         message:
-          "Email Verified successful , We'll redirecting you in home page.",
+          "Email Verified successful , We'll redirecting you in sign in.",
       });
       setTimeout(() => {
         setShowSuccessAlert({
@@ -191,18 +191,30 @@ export default function VerificationEmail() {
   }, [resendEmailDelay]);
 
   const onResendVerificationEmail = async () => {
-    setShowSuccessAlert({
-      isShow: true,
-      message: "A verification email has been sent to your email.",
-    }),
-      setResendEmailDelay(8);
-    setTimeout(() => {
+    try {
+      const response = await axios.post(
+        "/api/auth/resend-verification-email",
+        { email: email },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setShowSuccessAlert({
-        isShow: false,
-        message: "",
-      });
-    }, 3000);
-    dispatch(resendVerificationEmail(email));
+        isShow: true,
+        message: "A verification email has been sent to your email.",
+      }),
+        setResendEmailDelay(8);
+      setTimeout(() => {
+        setShowSuccessAlert({
+          isShow: false,
+          message: "",
+        });
+      }, 3000);
+    } catch (error) {
+      throw error.response.data.error;
+    }
   };
   return (
     <>

@@ -31,8 +31,10 @@ export function Signup() {
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {
-      sessionStorage.setItem('fromRedirect', 'true');
-      navigate(`/verify-email?email=${userData.email}`);
+      sessionStorage.setItem('fromRedirect', true);
+      setTimeout(()=>{
+        navigate(`/verify-email?email=${userData.email}`);
+      },1000)
       dispatch(updateStatus("idel"));
     } else {
       if (authInitialData.status == "failed") {
