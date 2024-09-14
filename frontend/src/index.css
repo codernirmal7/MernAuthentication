@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+
+  color: rgba(255, 255, 255, 0.87);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.signupWrapper {
+  transition: all 0.18s ease;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+}
+
+.signinWrapper{
+  transition: all 0.18s ease;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+}
+
+.verificationEmailWrapper{
+  height: 28rem;
+  transition: all 0.18s ease;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+  
+}
+
+.forgetPasswordWrapper{
+  height: 23rem;
+  transition: all 0.18s ease;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+  
+}
+
+.resetPasswordWrapper{
+  height: 25rem;
+  transition: all 0.18s ease;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+}
+
+.signinWrapper.popUp{
+  transform: scale(1);
+}
+
+.signupWrapper.popUp{
+  transform: scale(1);
+}
+.verificationEmailWrapper.popUp{
+  transform: scale(1);
+}
+
+.forgetPasswordWrapper.popUp{
+  transform: scale(1);
+}
+
+.resetPasswordWrapper.popUp{
+  transform: scale(1);
+}
+
+button{
+  user-select: none;
+}
+.loading {
+	border-bottom: 4px solid rgba(255, 255, 255, 0.2);
+	border-left: 4px solid rgba(255, 255, 255, 0.2);
+	border-right: 4px solid rgba(255, 255, 255, 0.2);
+	border-top: 4px solid rgba(255, 255, 255, 0.5);
+	border-radius: 100%;
+	height: 30px;
+	width: 30px;
+	animation: spin .6s infinite linear;
+  text-indent: 999em;
+}
+@keyframes spin {
+	from {transform: rotate(0deg);}
+	to {transform: rotate(359deg);}
+}
