@@ -1,12 +1,107 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import SuccessAlert from "../components/SuccessAlert";
+import { useDispatch, useSelector } from "react-redux";
+import ErrorAlert from "../components/ErrorAlert";
+import { updateStatus, verifyEmail } from "../redux/slices/authSlice";
+import axios from "axios";
 
 export default function VerificationEmail() {
   const [showSuccessAlert, setShowSuccessAlert] = useState({
     isShow: false,
     message: "",
   });
+
+  
+  const [inputBorder, setInputBorder] = useState("none");
+
+  
+  const [code, setCode] = useState(new Array(6).fill(""));
+  const inputRefs = useRef([]);
+
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [ip, setIp] = useState('');
+
+  const authInitialData = useSelector((state) => state.auth);
+  const [showErrorAlert, setShowErrorAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get('email');
+
+  useEffect(() => {
+    const fetchIPAddress = async () => {
+      try {
+        const response = await axios.get('https://api.ipify.org?format=json');
+        setIp(response.data.ip);
+      } catch (error) {
+        console.error('Error fetching IP address:', error);
+      }
+    };
+
+    fetchIPAddress();
+  }, []);
+
+  useEffect(() => {
+    if (authInitialData.status == "succeeded") {
+      dispatch(updateStatus("idel"));
+      setShowSuccessAlert({
+        isShow: true,
+        message:
+          "Email Verified successful , We'll redirecting you in home page.",
+      });
+      setTimeout(() => {
+        setShowSuccessAlert({
+          isShow: false,
+          message: "",
+        });
+        navigate("/");
+      }, 3000);
+      setInputBorder("none")
+    } else {
+      if (authInitialData.status == "failed") {
+        setInputBorder("red")
+        setShowErrorAlert({
+          isShow: true,
+          message: authInitialData.error,
+        }),
+          setTimeout(() => {
+            setShowErrorAlert({
+              isShow: false,
+              message: "",
+            });
+          }, 3000);
+      }
+    }
+  }, [authInitialData]);
+
+
+  function codeString (){
+    let result = ""
+    for(let i =0;i <code.toString().length; i++){
+       if(i % 2 == 0){
+          result += code.toString()[i]
+       }
+    }
+    return result
+  }
+
+  function onCodeSubmit (){
+    const arrayData = [
+      {
+        email : email
+      },
+      {
+        code : codeString(),
+        ipAddress : ip
+      }
+    ]
+    dispatch(verifyEmail(arrayData))
+    
+  }
 
   const [resendEmailDelay, setResendEmailDelay] = useState(0);
 
@@ -19,9 +114,6 @@ export default function VerificationEmail() {
       verificationEmailWrapper.classList.add("popUp");
     }, 50);
   });
-
-  const [code, setCode] = useState(new Array(6).fill(""));
-  const inputRefs = useRef([]);
 
   // Handle input change
   const handleChange = (element, index) => {
@@ -51,31 +143,27 @@ export default function VerificationEmail() {
     }
   };
 
-
   const handlePaste = (e) => {
     const paste = e.clipboardData.getData("text").slice(0, 6);
 
-
-    if(paste.length != 6){
+    if (paste.length != 6) {
       return;
     }
     const pasteArray = paste.split("").map((char) => (isNaN(char) ? "" : char));
 
-
     // Update the code state
     setCode(pasteArray);
-  
+
     // Automatically fill inputs and focus the last filled input
     pasteArray.forEach((char, idx) => {
       if (inputRefs.current[idx]) {
         inputRefs.current[idx].value = char;
       }
     });
-  
+
     // Prevent any further manual input by removing focus
     inputRefs.current[pasteArray.length - 1]?.blur();
   };
-  
 
   //this timer for resend email verification
   useEffect(() => {
@@ -145,13 +233,14 @@ export default function VerificationEmail() {
                         key={index}
                         type="text"
                         maxLength="1"
-                        className="w-12 h-12 border border-gray-600 rounded-md text-center text-black focus:outline-none focus:border-green-500"
+                        className="w-12 h-12 rounded-md text-center text-black focus:outline-none"
                         value={data}
                         onChange={(e) => handleChange(e.target, index)}
                         onKeyDown={(e) => handleKeyDown(e, index)}
                         onFocus={(e) => e.target.select()}
                         ref={(el) => (inputRefs.current[index] = el)}
                         onPaste={handlePaste}
+                        style={{ border: `2px solid ${inputBorder}` }}
                       />
                     );
                   })}
@@ -159,6 +248,7 @@ export default function VerificationEmail() {
                 <button
                   className="relative group/btn block bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full mt-4 text-white rounded-md h-10 font-medium"
                   type="submit"
+                  onClick={onCodeSubmit}
                 >
                   Verify email &rarr;
                   <BottomGradient />
@@ -207,6 +297,11 @@ export default function VerificationEmail() {
           showSuccessAlert={showSuccessAlert}
           setShowSuccessAlert={setShowSuccessAlert}
           message={showSuccessAlert.message}
+        />
+         <ErrorAlert
+          showErrorAlert={showErrorAlert}
+          setShowSuccessAlert={setShowErrorAlert}
+          message={showErrorAlert.message}
         />
       </div>
     </>

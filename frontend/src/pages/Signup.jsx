@@ -9,66 +9,119 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { signup, updateStatus } from "../redux/slices/authSlice";
+import ErrorAlert from "../components/ErrorAlert";
+import SuccessAlert from "../components/SuccessAlert";
 
 export function Signup() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const authInitialData = useSelector((state) => state.auth);
+  const [userData , setUserData] = useState({
+    name : "",
+    email : "",
+    password : ""
+  })
+  const [showErrorAlert, setShowErrorAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+
+  useEffect(() => {
+    if (authInitialData.status == "succeeded") {
+      navigate(`/verify-email?email=${userData.email}`);
+      dispatch(updateStatus("idel"));
+    } else {
+      if (authInitialData.status == "failed") {
+        setShowErrorAlert({
+          isShow: true,
+          message: authInitialData.error,
+        }),
+          setTimeout(() => {
+            setShowErrorAlert({
+              isShow: false,
+              message: "",
+            });
+          }, 3000);
+      }
+    }
+  }, [authInitialData]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const { name, email, password } = e.target;
+    setUserData({
+      name : name.value,
+      email : email.value,
+      password : password.value
+    })
+    dispatch(
+      signup({
+        name: name.value,
+        email: email.value,
+        password: password.value,
+      })
+    );
   };
-  const [showOauthContainer , setShowOauthContainer] = useState(false)
-  const [showSignUpContainer , setShowSignUpContainer] = useState(true)
 
+  const [showOauthContainer, setShowOauthContainer] = useState(false);
+  const [showSignUpContainer, setShowSignUpContainer] = useState(true);
 
   const onClickOauth = () => {
-      setShowOauthContainer(true)
-      setShowSignUpContainer(false)
+    setShowOauthContainer(true);
+    setShowSignUpContainer(false);
   };
 
   const onClickBack = () => {
-    setShowOauthContainer(false)
-    setShowSignUpContainer(true)
+    setShowOauthContainer(false);
+    setShowSignUpContainer(true);
   };
 
-
   //this animation for signupWrapper
-  useEffect(()=>{
-    setTimeout(()=>{
-      const signupWrapper = document.querySelector(".signupWrapper")
-      signupWrapper.classList.add("popUp")
-    },50)
-  })    
+  useEffect(() => {
+    setTimeout(() => {
+      const signupWrapper = document.querySelector(".signupWrapper");
+      signupWrapper.classList.add("popUp");
+    }, 50);
+  });
 
-  
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3">
         <div
           className="max-w-md w-full mx-auto transition ease-in-out delay-300 flex justify-center rounded-2xl shadow-input signupWrapper relative overflow-hidden p-5"
-          style={{height : 
-
-            showSignUpContainer ? "35rem"
-            :
-            showOauthContainer ? "25rem"
-            :
-            "33rem"
+          style={{
+            height: showSignUpContainer
+              ? "35rem"
+              : showOauthContainer
+              ? "25rem"
+              : "33rem",
           }}
         >
-          <div className="w-full  p-4 px-6 absolute transition ease-in-out delay-100 signupContainer" style={{transform : showSignUpContainer ? "translateX(0px)" : "translateX(-700px)"}}>
+          <div
+            className="w-full  p-4 px-6 absolute transition ease-in-out delay-100 signupContainer"
+            style={{
+              transform: showSignUpContainer
+                ? "translateX(0px)"
+                : "translateX(-700px)",
+            }}
+          >
             <div>
               <h2 className="font-bold text-xl dark:text-green-700">
                 Welcome to Mern Auth
               </h2>
               <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-              Locate the "Sign Up" button on the website. Clicking on it will take you in Email verification page.
+                Locate the "Sign Up" button on the website. Clicking on it will
+                take you in Email verification page.
               </p>
               <form className="my-8" onSubmit={handleSubmit}>
                 <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
                   <LabelInputContainer>
-                    <Label htmlFor="fullname">Full name</Label>
-                    <Input id="fullname" placeholder="Tyler Ern" type="text" />
+                    <Label htmlFor="name">Full name</Label>
+                    <Input id="name" placeholder="Tyler Ern" type="text" />
                   </LabelInputContainer>
-                 
                 </div>
                 <LabelInputContainer className="mb-4">
                   <Label htmlFor="email">Email Address</Label>
@@ -83,13 +136,18 @@ export function Signup() {
                   <Input id="password" placeholder="••••••••" type="password" />
                 </LabelInputContainer>
 
-
                 <div className="flex flex-col gap-2 ">
                   <button
-                    className="relative group/btn block bg-gradient-to-br from-brand via-green-700  hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 to-emerald-900 w-full text-white rounded-md h-10 font-medium"
+                    className="relative group/btn flex justify-center items-center bg-gradient-to-br from-brand via-green-700  hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 to-emerald-900 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
                   >
-                    Sign up &rarr;
+                    {authInitialData.status == "loading" ? (
+                      <>
+                       <div class="loading">Loading...</div>
+                      </>
+                    ) : (
+                      <>Sign up &rarr;</>
+                    )}
                     <BottomGradient />
                   </button>
 
@@ -117,22 +175,28 @@ export function Signup() {
             </div>
           </div>
 
-          <div className="w-full flex-col px-6 space-y-4 p-4 absolute transition ease-in-out delay-100 oauthContainer" style={{transform : showOauthContainer ? "translateX(0px)" : "translateX(700px)"}}>
-          <h2 className="font-bold text-xl  dark:text-green-700">
-                Welcome to Mern Auth
-              </h2>
-              <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-              You'll be redirected to your chosen service's login page. Allow the app to access your account information.
-              </p>
-           
+          <div
+            className="w-full flex-col px-6 space-y-4 p-4 absolute transition ease-in-out delay-100 oauthContainer"
+            style={{
+              transform: showOauthContainer
+                ? "translateX(0px)"
+                : "translateX(700px)",
+            }}
+          >
+            <h2 className="font-bold text-xl  dark:text-green-700">
+              Welcome to Mern Auth
+            </h2>
+            <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+              You'll be redirected to your chosen service's login page. Allow
+              the app to access your account information.
+            </p>
+
             <button
               className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50"
               type="submit"
             >
               <IconBrandGithub className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">
-                GitHub
-              </span>
+              <span className="text-neutral-700 text-sm">GitHub</span>
               <BottomGradient />
             </button>
             <button
@@ -140,9 +204,7 @@ export function Signup() {
               type="submit"
             >
               <IconBrandGoogle className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">
-                Google
-              </span>
+              <span className="text-neutral-700 text-sm">Google</span>
               <BottomGradient />
             </button>
             <button
@@ -150,9 +212,7 @@ export function Signup() {
               type="submit"
             >
               <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">
-                OnlyFans
-              </span>
+              <span className="text-neutral-700 text-sm">OnlyFans</span>
               <BottomGradient />
             </button>
 
@@ -165,6 +225,11 @@ export function Signup() {
             </button>
           </div>
         </div>
+        <ErrorAlert
+          showErrorAlert={showErrorAlert}
+          setShowSuccessAlert={setShowErrorAlert}
+          message={showErrorAlert.message}
+        />
       </div>
     </>
   );
