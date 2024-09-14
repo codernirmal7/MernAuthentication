@@ -1,5 +1,4 @@
 import {
-  sendLoginCodeEmail,
   sendLoginNotification,
   sendResetPasswordEmail,
   sendResetPasswordSuccessfulEmail,
@@ -11,16 +10,15 @@ import bcrypt from "bcrypt";
 import otpGenerator from "otp-generator";
 
 const signup = async (req, res) => {
-  const { email, password, name } = req.body;
-  if(!password){
-    return res.status(400).json({
-      success: false,
-      error: "Password is required.",
-      statusCode: 400,
-    });
-  }
- 
+  const {name, email, password } = req.body;
   try {
+    if(password.length <8){
+      return res.status(400).json({
+        success: false,
+        error: "Password length must be greater 8.",
+        statusCode: 400,
+      });
+    }
     const isUserAlreadyExists = await User.findOne({ email });
     if (isUserAlreadyExists) {
       return res.status(400).json({
@@ -30,8 +28,10 @@ const signup = async (req, res) => {
       });
     }
     const verificationCode = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
+      digits : true,
+      lowerCaseAlphabets : false,
+      upperCaseAlphabets : false,
+      specialChars : false
     });
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,6 +49,7 @@ const signup = async (req, res) => {
     await user.save();
 
     await sendVerificationEmail(user.email, verificationCode);
+
 
     return res.status(200).json({
       success: true,
@@ -139,8 +140,10 @@ const verifyEmail = async (req, res) => {
 
 const signin = async (req, res) => {
   const verificationCode = otpGenerator.generate(6, {
-    upperCaseAlphabets: false,
-    specialChars: false,
+    digits : true,
+    lowerCaseAlphabets : false,
+    upperCaseAlphabets : false,
+    specialChars : false
   });
  
   try {
@@ -186,9 +189,10 @@ const signin = async (req, res) => {
    
 
     res.cookie("token", user.generateAccessToken(), {
-      httpOnly: true,
+      // httpOnly: true,
       maxAge: Date.now() + 7 * 24 * 60 * 60 * 1000, //7days
     });
+
     sendLoginNotification(user.email, userAgent, ipAddress, user.name);
 
     return res.status(200).json({
@@ -235,9 +239,10 @@ const forgetPassword = async (req, res) => {
     }
    
     const resetPasswordToken = otpGenerator.generate(25, {
-      upperCaseAlphabets: true,
-      specialChars: false,
-      digits: false,
+      digits : true,
+      lowerCaseAlphabets : false,
+      upperCaseAlphabets : false,
+      specialChars : false
     });
 
     userExists.resetPasswordToken = resetPasswordToken;
@@ -379,8 +384,10 @@ const resendVerificationEmail = async (req,res)=>{
     }
 
     const verificationCode = otpGenerator.generate(6, {
-      upperCaseAlphabets: false,
-      specialChars: false,
+      digits : true,
+      lowerCaseAlphabets : false,
+      upperCaseAlphabets : false,
+      specialChars : false
     });
   
   
