@@ -10,9 +10,9 @@ import bcrypt from "bcrypt";
 import otpGenerator from "otp-generator";
 
 const signup = async (req, res) => {
-  const {name, email, password } = req.body;
+  const { name, email, password } = req.body;
   try {
-    if(password.length <8){
+    if (password.length < 8) {
       return res.status(400).json({
         success: false,
         error: "Password length must be greater 8.",
@@ -28,28 +28,27 @@ const signup = async (req, res) => {
       });
     }
     const verificationCode = otpGenerator.generate(6, {
-      digits : true,
-      lowerCaseAlphabets : false,
-      upperCaseAlphabets : false,
-      specialChars : false
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
     });
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = new User({
       email,
-      password : hashedPassword,
+      password: hashedPassword,
       name,
       verificationToken: verificationCode,
       verificationTokenExpiresAt: Date.now() + 1 * 60 * 60 * 1000, //1 hours
     });
 
-    user.oldPasswords.push(hashedPassword)
+    user.oldPasswords.push(hashedPassword);
 
     await user.save();
 
     await sendVerificationEmail(user.email, verificationCode);
-
 
     return res.status(200).json({
       success: true,
@@ -121,7 +120,6 @@ const verifyEmail = async (req, res) => {
       user.knownIPs.push(ipAddress);
     }
 
-
     sendWellcomeEmail(user.email);
 
     return res.status(200).json({
@@ -140,15 +138,15 @@ const verifyEmail = async (req, res) => {
 
 const signin = async (req, res) => {
   const verificationCode = otpGenerator.generate(6, {
-    digits : true,
-    lowerCaseAlphabets : false,
-    upperCaseAlphabets : false,
-    specialChars : false
+    digits: true,
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: false,
+    specialChars: false,
   });
- 
+
   try {
     const { email, password, ipAddress, userAgent } = req.body;
-   
+
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -173,20 +171,19 @@ const signin = async (req, res) => {
         await user.save();
       await sendVerificationEmail(user.email, verificationCode, user.name);
       return res.status(400).json({
-        message: "Verify your email.",
+        success: false,
+        error: "Verify your email.",
+        statusCode: 400,
       });
     }
 
-    if(user.isDisable){
+    if (user.isDisable) {
       return res.status(400).json({
         success: false,
         error: "Your account is disable.",
         statusCode: 400,
       });
     }
-
-   
-   
 
     res.cookie("token", user.generateAccessToken(), {
       // httpOnly: true,
@@ -209,18 +206,16 @@ const signin = async (req, res) => {
   }
 };
 
-
 const forgetPassword = async (req, res) => {
   const { email } = req.body;
-    if (!email) {
-      return res.status(400).json({
-        success: false,
-        error: "Please a enter email address",
-        statusCode: 400,
-      });
-    }
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      error: "Please a enter email address",
+      statusCode: 400,
+    });
+  }
   try {
-    
     const userExists = await User.findOne({ email });
 
     if (!userExists) {
@@ -230,26 +225,25 @@ const forgetPassword = async (req, res) => {
         statusCode: 400,
       });
     }
-    if(userExists.isDisable){
+    if (userExists.isDisable) {
       return res.status(400).json({
         success: false,
         error: "Your account is disable.",
         statusCode: 400,
       });
     }
-   
+
     const resetPasswordToken = otpGenerator.generate(25, {
-      digits : true,
-      lowerCaseAlphabets : false,
-      upperCaseAlphabets : false,
-      specialChars : false
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
     });
 
     userExists.resetPasswordToken = resetPasswordToken;
     userExists.resetPasswordTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; //1 hours
 
     await userExists.save();
-
 
     sendResetPasswordEmail(email, resetPasswordToken, userExists.name);
 
@@ -269,7 +263,7 @@ const forgetPassword = async (req, res) => {
 
 const resetPassword = async (req, res) => {
   const { password, confirmPassword } = req.body;
-  const resetPasswordToken  = req.params.token;
+  const resetPasswordToken = req.params.token;
   try {
     const user = await User.findOne({
       resetPasswordToken: resetPasswordToken.split(":")[1],
@@ -298,7 +292,7 @@ const resetPassword = async (req, res) => {
         statusCode: 400,
       });
     }
-    if(confirmPassword !== password ){
+    if (confirmPassword !== password) {
       return res.status(400).json({
         success: false,
         error: "Confirm password must be match with password",
@@ -309,7 +303,7 @@ const resetPassword = async (req, res) => {
     const data = [];
 
     for (let i = 0; i < user.oldPasswords.length; i++) {
-      if (await bcrypt.compare(password,user.oldPasswords[i])) {
+      if (await bcrypt.compare(password, user.oldPasswords[i])) {
         data.push("match");
       } else {
         data.push("not match");
@@ -323,7 +317,6 @@ const resetPassword = async (req, res) => {
         statusCode: 400,
       });
     }
-    
 
     user.resetPasswordToken = null;
     user.resetPasswordTokenExpiresAt = null;
@@ -331,19 +324,17 @@ const resetPassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
     user.password = hashedPassword;
 
-    user.oldPasswords.push(hashedPassword)
-
+    user.oldPasswords.push(hashedPassword);
 
     await user.save();
 
-    sendResetPasswordSuccessfulEmail(user.email,user.name)
+    sendResetPasswordSuccessfulEmail(user.email, user.name);
 
     return res.status(200).json({
       success: true,
       message: "Password reset successful.",
       statusCode: 200,
     });
-
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -353,10 +344,10 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const resendVerificationEmail = async (req,res)=>{
-  const {email} = req.body
+const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
 
-  if(!email){
+  if (!email) {
     return res.status(400).json({
       success: false,
       error: "Email is required",
@@ -364,10 +355,9 @@ const resendVerificationEmail = async (req,res)=>{
     });
   }
   try {
-      
-    const userExists = await User.findOne({email})
+    const userExists = await User.findOne({ email });
 
-    if(!userExists){
+    if (!userExists) {
       return res.status(400).json({
         success: false,
         error: "Invalid credentials.",
@@ -375,7 +365,7 @@ const resendVerificationEmail = async (req,res)=>{
       });
     }
 
-    if(userExists.isVerified){
+    if (userExists.isVerified) {
       return res.status(400).json({
         success: false,
         error: "Your email address is already verified",
@@ -384,24 +374,21 @@ const resendVerificationEmail = async (req,res)=>{
     }
 
     const verificationCode = otpGenerator.generate(6, {
-      digits : true,
-      lowerCaseAlphabets : false,
-      upperCaseAlphabets : false,
-      specialChars : false
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
     });
-  
-  
-    userExists.verificationToken = verificationCode
-    userExists.verificationTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000, //1 hours
-  
-    await userExists.save();
-  
+
+    userExists.verificationToken = verificationCode;
+    (userExists.verificationTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000), //1 hours
+      await userExists.save();
+
     await sendVerificationEmail(email, verificationCode);
-  
+
     return res.status(200).json({
       success: true,
-      message:
-        "Email verification mail was sent successful",
+      message: "Email verification mail was sent successful",
       statusCode: 201,
       error: null,
     });
@@ -412,17 +399,15 @@ const resendVerificationEmail = async (req,res)=>{
       statusCode: 500,
     });
   }
-}
+};
 
-
-
-const userData = async (req,res)=>{
+const userData = async (req, res) => {
   try {
-    const userData = req.userData
+    const userData = req.userData;
     return res.status(200).json({
       success: true,
       message: userData,
-      error : null,
+      error: null,
       statusCode: 200,
     });
   } catch (error) {
@@ -432,15 +417,15 @@ const userData = async (req,res)=>{
       statusCode: 500,
     });
   }
-}
+};
 
-const signout = async (req,res)=>{
+const signout = async (req, res) => {
   try {
-    res.clearCookie("token")
+    res.clearCookie("token");
     return res.status(200).json({
       success: true,
       message: "Sign out successful.",
-      error : null,
+      error: null,
       statusCode: 200,
     });
   } catch (error) {
@@ -450,6 +435,15 @@ const signout = async (req,res)=>{
       statusCode: 500,
     });
   }
+};
+
+const isLogged = async (req,res)=>{
+  return res.status(200).json({
+    success: true,
+    message: "Your are Logged.",
+    error: null,
+    statusCode: 200,
+  });
 }
 
 export {
@@ -460,5 +454,6 @@ export {
   resetPassword,
   resendVerificationEmail,
   userData,
-  signout
+  signout,
+  isLogged
 };

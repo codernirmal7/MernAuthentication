@@ -8,6 +8,7 @@ import {
   resendVerificationEmail,
   userData,
   signout,
+  isLogged,
 } from "../controllers/auth.controllers.js";
 import verifyToken from "../middleware/verifyToken.middleware.js";
 import passport from "../utils/passport.utils.js";
@@ -26,6 +27,8 @@ authRouter.route("/reset-password/:token").post(resetPassword);
 authRouter.route("/user-data").get(verifyToken, userData);
 
 authRouter.route("/sign-out").get(signout)
+
+authRouter.route("/isLogged").get(verifyToken,isLogged)
 
 
 //Google OAuth login
@@ -47,5 +50,7 @@ authRouter.route("/github/callback").get(
     res.redirect('/profile');
   }
 );
+
+
 
 export default authRouter;

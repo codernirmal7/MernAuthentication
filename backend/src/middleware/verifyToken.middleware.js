@@ -11,9 +11,10 @@ const verifyToken = async (req, res, next) => {
     });
   }
 
-  try {
+try {
     const decodeToken = jwt.decode(token, process.env.JWT_PRIVATE_KEY);
     if (!decodeToken) {
+      res.clearCookie("token");
       return res.status(400).json({
         success: false,
         error: "Invalid or expired token",
