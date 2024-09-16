@@ -13,11 +13,7 @@ import { useEffect } from "react";
 import Home from "./pages/Home";
 
 function App() {
-  const dispatch = useDispatch()
-  const authInitialData = useSelector((state)=> state.auth)
-  useEffect(() => {
-    dispatch(checkIsLoggedIn())
-  }, [authInitialData.isLoggedIn])
+
   const router = createBrowserRouter([
     {
       path: "/",

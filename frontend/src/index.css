@@ -84,7 +84,23 @@
   transition: all .5s ease ;
 }
 
+.homeWrapper{
+  height: 27rem;
+  transition: all 0.18s ease;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(1.3px);
+  -webkit-backdrop-filter: blur(1.3px);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  transform: scale(0);
+  transition: all .5s ease ;
+}
+
 .signinWrapper.popUp{
+  transform: scale(1);
+}
+.homeWrapper.popUp{
   transform: scale(1);
 }
 

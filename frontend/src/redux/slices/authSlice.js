@@ -85,6 +85,15 @@ const getUserData = createAsyncThunk("/api/auth/user-data", async () => {
   }
 });
 
+const signOut = createAsyncThunk("/api/auth/sign-out", async () => {
+  try {
+    const response = await axios.get("/api/auth/sign-out")
+    return response.data.message;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+});
+
 
 const initialState = {
   data: [],
@@ -185,9 +194,18 @@ const authSlice = createSlice({
         state.userData = []
         state.error = action.error.message;
       })
+      .addCase(signOut.pending, (state) => {
+        state.error = null
+      })
+      .addCase(signOut.fulfilled, (state) => {
+        state.error = null
+      })
+      .addCase(signOut.rejected, (state, action) => {
+        state.error = action.error.message;
+      })
   },
 });
 
 export const { updateStatus } = authSlice.actions;
 export default authSlice.reducer;
-export {signup,verifyEmail,signin, foregtPassword, resetPassword, checkIsLoggedIn,getUserData}
+export {signup,verifyEmail,signin, foregtPassword, resetPassword, checkIsLoggedIn,getUserData,signOut}

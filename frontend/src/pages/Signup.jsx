@@ -9,9 +9,9 @@ import {
   IconBrandGoogle,
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { signup, updateStatus } from "../redux/slices/authSlice";
+import { checkIsLoggedIn, signup, updateStatus } from "../redux/slices/authSlice";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 
@@ -33,14 +33,15 @@ export function Signup() {
        navigate("/")
     }
   },[authInitialData.isLoggedIn])
-
+  useEffect(() => {
+    dispatch(checkIsLoggedIn())
+  }, [authInitialData.isLoggedIn])
+  
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {
       sessionStorage.setItem('fromRedirect', true);
-      setTimeout(()=>{
-        navigate(`/verify-email?email=${userData.email}`);
-      },1000)
+      navigate(`/verify-email?email=${userData.email}`);
       dispatch(updateStatus("idel"));
     } else {
       if (authInitialData.status == "failed") {

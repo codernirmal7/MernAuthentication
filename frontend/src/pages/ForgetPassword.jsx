@@ -24,10 +24,6 @@ export default function ForgetPassword() {
   const authInitialData = useSelector((state) => state.auth);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    dispatch(getUserData());
-    console.log(authInitialData.data);
-  }, [authInitialData.isLoggedIn]);
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {

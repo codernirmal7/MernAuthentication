@@ -9,7 +9,7 @@ import {
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { signin, updateStatus } from "../redux/slices/authSlice";
+import { checkIsLoggedIn, signin, updateStatus } from "../redux/slices/authSlice";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 import axios from "axios";
@@ -35,6 +35,11 @@ export default function Signin() {
 
   const navigate = useNavigate()
 
+  useEffect(() => {
+    dispatch(checkIsLoggedIn())
+  }, [authInitialData.isLoggedIn])
+  
+
   useEffect(()=>{
     if(authInitialData.isLoggedIn){
        navigate("/")
@@ -44,59 +49,57 @@ export default function Signin() {
 
 
   const [ip, setIp] = useState('');
+
   useEffect(() => {
-    const fetchIPAddress = async () => {
+    const fetchIp = async () => {
       try {
-        const response = await axios.get('https://api.ipify.org?format=json');
-        setIp(response.data.ip);
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        setIp(data.ip);
       } catch (error) {
         console.error('Error fetching IP address:', error);
       }
     };
 
-    fetchIPAddress();
+    fetchIp();
   }, []);
 
+
+
+
   useEffect(() => {
-    if (authInitialData.status == "succeeded") {
+    if (authInitialData.status === "succeeded") {
       setShowSuccessAlert({
         isShow: true,
-        message: "Signin successful , We'll redirecting you in home page.",
-      }),
-        setTimeout(() => {
-          setShowSuccessAlert({
-            isShow: false,
-            message: "",
-          });
-          navigate('/')
-        }, 3000);
-      dispatch(updateStatus("idel"));
-    } else {
-      if (authInitialData.status == "failed") {
-        if(authInitialData.error == "Verify your email."){
-         sessionStorage.setItem('fromRedirect', true);
-          setTimeout(()=>{
-            navigate(`/verify-email?email=${userData.email}`);
-          },1000)
-        }
-       
+        message: "Signin successful. We'll redirect you to the home page.",
+      });
+      setTimeout(() => {
+        setShowSuccessAlert({
+          isShow: false,
+          message: "",
+        });
+        navigate('/');
+      }, 1000);
+      dispatch(updateStatus("idle"));
+    } else if (authInitialData.status === "failed") {
+      setShowErrorAlert({
+        isShow: true,
+        message: authInitialData.error,
+      });
+      setTimeout(() => {
         setShowErrorAlert({
-          isShow: true,
-          message: authInitialData.error,
-        }),
-      
-          setTimeout(() => {
-            setShowErrorAlert({
-              isShow: false,
-              message: "",
-            });
-          }, 3000);
-      dispatch(updateStatus("idel"));
-
-      }
+          isShow: false,
+          message: "",
+        });
+        if (authInitialData.error === "Verify your email.") {
+          sessionStorage.setItem('fromRedirect', 'true');
+          navigate(`/verify-email?email=${userData.email}`);
+        }
+      }, 1000);
+      dispatch(updateStatus("idle"));
     }
   }, [authInitialData]);
-
+  
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = e.target;
