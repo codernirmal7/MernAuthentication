@@ -67,7 +67,7 @@ export default function VerificationEmail() {
           message: "",
         });
         navigate("/signin");
-      }, 3000);
+      }, 1000);
       setInputBorder("none");
     } else {
       if (authInitialData.status == "failed") {
@@ -81,7 +81,7 @@ export default function VerificationEmail() {
               isShow: false,
               message: "",
             });
-          }, 3000);
+          }, 1000);
           dispatch(updateStatus("idel"));
 
       }

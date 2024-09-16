@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { checkIsLoggedIn, signin, updateStatus } from "../redux/slices/authSlice";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
-import axios from "axios";
 
 export default function Signin() {
   
@@ -81,7 +80,9 @@ export default function Signin() {
         navigate('/');
       }, 1000);
       dispatch(updateStatus("idle"));
-    } else if (authInitialData.status === "failed") {
+
+    } else{
+     if (authInitialData.status === "failed") {
       setShowErrorAlert({
         isShow: true,
         message: authInitialData.error,
@@ -98,6 +99,7 @@ export default function Signin() {
       }, 1000);
       dispatch(updateStatus("idle"));
     }
+  }
   }, [authInitialData]);
   
   const handleSubmit = (e) => {

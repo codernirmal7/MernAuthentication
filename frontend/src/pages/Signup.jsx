@@ -11,7 +11,11 @@ import {
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkIsLoggedIn, signup, updateStatus } from "../redux/slices/authSlice";
+import {
+  checkIsLoggedIn,
+  signup,
+  updateStatus,
+} from "../redux/slices/authSlice";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 
@@ -19,28 +23,27 @@ export function Signup() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const authInitialData = useSelector((state) => state.auth);
-  const [userData , setUserData] = useState({
-    name : "",
-    email : "",
-    password : ""
-  })
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [showErrorAlert, setShowErrorAlert] = useState({
     isShow: false,
     message: "",
   });
-  useEffect(()=>{
-    if(authInitialData.isLoggedIn){
-       navigate("/")
-    }
-  },[authInitialData.isLoggedIn])
   useEffect(() => {
-    dispatch(checkIsLoggedIn())
-  }, [authInitialData.isLoggedIn])
-  
+    if (authInitialData.isLoggedIn) {
+      navigate("/");
+    }
+  }, [authInitialData.isLoggedIn]);
+  useEffect(() => {
+    dispatch(checkIsLoggedIn());
+  }, [authInitialData.isLoggedIn]);
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {
-      sessionStorage.setItem('fromRedirect', true);
+      sessionStorage.setItem("fromRedirect", true);
       navigate(`/verify-email?email=${userData.email}`);
       dispatch(updateStatus("idel"));
     } else {
@@ -54,8 +57,8 @@ export function Signup() {
               isShow: false,
               message: "",
             });
-          }, 3000);
-      dispatch(updateStatus("idel"));
+          }, 1000);
+        dispatch(updateStatus("idel"));
       }
     }
   }, [authInitialData]);
@@ -64,10 +67,10 @@ export function Signup() {
     e.preventDefault();
     const { name, email, password } = e.target;
     setUserData({
-      name : name.value,
-      email : email.value,
-      password : password.value
-    })
+      name: name.value,
+      email: email.value,
+      password: password.value,
+    });
     dispatch(
       signup({
         name: name.value,
@@ -96,7 +99,7 @@ export function Signup() {
       const signupWrapper = document.querySelector(".signupWrapper");
       signupWrapper.classList.add("popUp");
     }, 50);
-  },[]);
+  }, []);
 
   return (
     <>
@@ -154,7 +157,7 @@ export function Signup() {
                   >
                     {authInitialData.status == "loading" ? (
                       <>
-                       <div class="loading">Loading...</div>
+                        <div class="loading">Loading...</div>
                       </>
                     ) : (
                       <>Sign up &rarr;</>
