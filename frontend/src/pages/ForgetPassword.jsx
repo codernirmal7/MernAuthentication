@@ -5,7 +5,11 @@ import { Link } from "react-router-dom";
 import SuccessAlert from "../components/SuccessAlert";
 import ErrorAlert from "../components/ErrorAlert";
 import { useDispatch, useSelector } from "react-redux";
-import { foregtPassword, updateStatus } from "../redux/slices/authSlice";
+import {
+  foregtPassword,
+  updateStatus,
+  getUserData,
+} from "../redux/slices/authSlice";
 
 export default function ForgetPassword() {
   const [showSuccessAlert, setShowSuccessAlert] = useState({
@@ -16,16 +20,20 @@ export default function ForgetPassword() {
     isShow: false,
     message: "",
   });
-  const [email , setEmail ]= useState("")
-  const authInitialData = useSelector((state)=> state.auth)
-  const dispatch = useDispatch()
+  const [email, setEmail] = useState("");
+  const authInitialData = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getUserData());
+    console.log(authInitialData.data);
+  }, [authInitialData.isLoggedIn]);
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {
       setShowSuccessAlert({
         isShow: true,
-        message:
-          `Please check your mail inbox for a password reset link that we’ve sent to ${email}.`,
+        message: `Please check your mail inbox for a password reset link that we’ve sent to ${email}.`,
       }),
         setTimeout(() => {
           setShowSuccessAlert({
@@ -46,8 +54,7 @@ export default function ForgetPassword() {
               message: "",
             });
           }, 3000);
-         dispatch(updateStatus("idel"));
-
+        dispatch(updateStatus("idel"));
       }
     }
   }, [authInitialData]);
@@ -55,8 +62,8 @@ export default function ForgetPassword() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email } = e.target;
-    setEmail(email.value)
-    dispatch(foregtPassword({email : email.value}))
+    setEmail(email.value);
+    dispatch(foregtPassword({ email: email.value }));
   };
 
   //this animation for forgetPasswordWrapper

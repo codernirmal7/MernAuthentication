@@ -76,6 +76,14 @@ const checkIsLoggedIn = createAsyncThunk("/api/auth/islogged", async () => {
   }
 });
 
+const getUserData = createAsyncThunk("/api/auth/user-data", async () => {
+  try {
+    const response = await axios.get("/api/auth/user-data")
+    return response.data.message;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+});
 
 
 const initialState = {
@@ -166,9 +174,20 @@ const authSlice = createSlice({
         state.isLoggedIn = false
         state.error = action.error.message;
       })
+      .addCase(getUserData.pending, (state) => {
+        state.error = null
+      })
+      .addCase(getUserData.fulfilled, (state,action) => {
+        state.data = action.payload
+        state.error = null
+      })
+      .addCase(getUserData.rejected, (state, action) => {
+        state.userData = []
+        state.error = action.error.message;
+      })
   },
 });
 
 export const { updateStatus } = authSlice.actions;
 export default authSlice.reducer;
-export {signup,verifyEmail,signin, foregtPassword, resetPassword, checkIsLoggedIn}
+export {signup,verifyEmail,signin, foregtPassword, resetPassword, checkIsLoggedIn,getUserData}

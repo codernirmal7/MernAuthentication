@@ -7,14 +7,26 @@ import VerificationEmail from "./pages/VerificationEmail";
 import ForgetPassword from "./pages/ForgetPassword";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { checkIsLoggedIn } from "./redux/slices/authSlice";
+import { useEffect } from "react";
+import Home from "./pages/Home";
 
 function App() {
   const dispatch = useDispatch()
-
-  dispatch(checkIsLoggedIn())
+  const authInitialData = useSelector((state)=> state.auth)
+  useEffect(() => {
+    dispatch(checkIsLoggedIn())
+  }, [authInitialData.isLoggedIn])
   const router = createBrowserRouter([
+    {
+      path: "/",
+      element: (
+        <>
+          <Home />
+        </>
+      ),
+    },
     {
       path: "/signup",
       element: (
