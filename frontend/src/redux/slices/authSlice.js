@@ -40,10 +40,47 @@ const signin = createAsyncThunk("/api/auth/signin", async (userData) => {
   }
 });
 
+const foregtPassword = createAsyncThunk("/api/auth/forget-password", async (email) => {
+  try {
+    const response = await axios.post("/api/auth/forget-password", email, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data.message;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+});
+
+
+const resetPassword = createAsyncThunk("/api/auth/reset-password", async (data) => {
+  try {
+    const response = await axios.post(`/api/auth/reset-password/:${data.resetPasswordToken}`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return response.data.message;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+});
+
+const checkIsLogged = createAsyncThunk("/api/auth/islogged", async () => {
+  try {
+    const response = await axios.get("/api/auth/islogged")
+    return response.data.message;
+  } catch (error) {
+    throw error.response.data.error;
+  }
+});
+
 
 
 const initialState = {
   data: [],
+  isLogged : false,
   status: "idel", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
@@ -94,10 +131,44 @@ const authSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-     
+      .addCase(foregtPassword.pending, (state) => {
+        state.status = "loading";
+        state.error = null
+      })
+      .addCase(foregtPassword.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.error = null
+      })
+      .addCase(foregtPassword.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(resetPassword.pending, (state) => {
+        state.status = "loading";
+        state.error = null
+      })
+      .addCase(resetPassword.fulfilled, (state) => {
+        state.status = "succeeded";
+        state.error = null
+      })
+      .addCase(resetPassword.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      })
+      .addCase(checkIsLogged.pending, (state) => {
+        state.error = null
+      })
+      .addCase(checkIsLogged.fulfilled, (state) => {
+        state.isLogged = true
+        state.error = null
+      })
+      .addCase(checkIsLogged.rejected, (state, action) => {
+        state.isLogged = false
+        state.error = action.error.message;
+      })
   },
 });
 
 export const { updateStatus } = authSlice.actions;
 export default authSlice.reducer;
-export {signup,verifyEmail,signin}
+export {signup,verifyEmail,signin, foregtPassword, resetPassword}

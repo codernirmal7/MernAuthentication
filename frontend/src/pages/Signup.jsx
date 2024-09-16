@@ -48,6 +48,7 @@ export function Signup() {
               message: "",
             });
           }, 3000);
+      dispatch(updateStatus("idel"));
       }
     }
   }, [authInitialData]);

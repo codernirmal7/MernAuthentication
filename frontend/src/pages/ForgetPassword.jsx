@@ -3,39 +3,77 @@ import { Input } from "../components/ui/input";
 import { cn } from "../components/lib/utils";
 import { Link } from "react-router-dom";
 import SuccessAlert from "../components/SuccessAlert";
+import ErrorAlert from "../components/ErrorAlert";
+import { useDispatch, useSelector } from "react-redux";
+import { foregtPassword, updateStatus } from "../redux/slices/authSlice";
 
 export default function ForgetPassword() {
-    const [showSuccessAlert, setShowSuccessAlert] = useState({
-        isShow: false,
-        message: "",
-      });
-    
+  const [showSuccessAlert, setShowSuccessAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const [showErrorAlert, setShowErrorAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const [email , setEmail ]= useState("")
+  const authInitialData = useSelector((state)=> state.auth)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (authInitialData.status == "succeeded") {
+      setShowSuccessAlert({
+        isShow: true,
+        message:
+          `Please check your mail inbox for a password reset link that we’ve sent to ${email}.`,
+      }),
+        setTimeout(() => {
+          setShowSuccessAlert({
+            isShow: false,
+            message: "",
+          });
+        }, 3000);
+      dispatch(updateStatus("idel"));
+    } else {
+      if (authInitialData.status == "failed") {
+        setShowErrorAlert({
+          isShow: true,
+          message: authInitialData.error,
+        }),
+          setTimeout(() => {
+            setShowErrorAlert({
+              isShow: false,
+              message: "",
+            });
+          }, 3000);
+         dispatch(updateStatus("idel"));
+
+      }
+    }
+  }, [authInitialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const { email } = e.target;
+    setEmail(email.value)
+    dispatch(foregtPassword({email : email.value}))
   };
-
 
   //this animation for forgetPasswordWrapper
   useEffect(() => {
     setTimeout(() => {
-      const forgetPasswordWrapper = document.querySelector(".forgetPasswordWrapper");
+      const forgetPasswordWrapper = document.querySelector(
+        ".forgetPasswordWrapper"
+      );
       forgetPasswordWrapper.classList.add("popUp");
     }, 50);
-  },[]);
-  
+  }, []);
+
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3 ">
-        <div
-          className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input forgetPasswordWrapper relative overflow-hidden p-5"
-          
-        >
-          <div
-            className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 "
-           
-          >
+        <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input forgetPasswordWrapper relative overflow-hidden p-5">
+          <div className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 ">
             <div>
               <h2 className="font-bold text-3xl dark:text-green-700 text-center">
                 Forget password
@@ -57,19 +95,6 @@ export default function ForgetPassword() {
                   <button
                     className="relative group/btn block  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
-                    onClick={() => {
-                        setShowSuccessAlert({
-                          isShow: true,
-                          message:
-                            "Please check your mail inbox for a password reset link that we’ve sent to codernirmal@gmail.com.",
-                        }),
-                        setTimeout(() => {
-                          setShowSuccessAlert({
-                            isShow: false,
-                            message: "",
-                          });
-                        }, 3000);
-                      }}
                   >
                     Send &rarr;
                     <BottomGradient />
@@ -92,6 +117,11 @@ export default function ForgetPassword() {
           showSuccessAlert={showSuccessAlert}
           setShowSuccessAlert={setShowSuccessAlert}
           message={showSuccessAlert.message}
+        />
+        <ErrorAlert
+          showErrorAlert={showErrorAlert}
+          setShowSuccessAlert={setShowErrorAlert}
+          message={showErrorAlert.message}
         />
       </div>
     </>

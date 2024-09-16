@@ -82,6 +82,8 @@ export default function VerificationEmail() {
               message: "",
             });
           }, 3000);
+          dispatch(updateStatus("idel"));
+
       }
     }
   }, [authInitialData]);

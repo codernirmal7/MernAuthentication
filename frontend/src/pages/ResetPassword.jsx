@@ -4,36 +4,79 @@ import { Label } from "../components/ui/lable";
 import { Input } from "../components/ui/input";
 import { cn } from "../components/lib/utils";
 import SuccessAlert from "../components/SuccessAlert";
+import ErrorAlert from "../components/ErrorAlert";
+import { useDispatch, useSelector } from "react-redux";
+import { resetPassword, updateStatus } from "../redux/slices/authSlice";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function ResetPassword() {
+  const [showSuccessAlert, setShowSuccessAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const [showErrorAlert, setShowErrorAlert] = useState({
+    isShow: false,
+    message: "",
+  });
+  const authInitialData = useSelector((state)=> state.auth)
+  const dispatch = useDispatch()
+  const {token} = useParams()
+  const navigate = useNavigate()
 
-    const [showSuccessAlert, setShowSuccessAlert] = useState({
-        isShow: false,
-        message: "",
-      });
-    
 
+  useEffect(() => {
+    if (authInitialData.status == "succeeded") {
+      setShowSuccessAlert({
+        isShow: true,
+        message:
+          "Password reset successful.",
+      }),
+        setTimeout(() => {
+          setShowSuccessAlert({
+            isShow: false,
+            message: "",
+          });
+          navigate("/signin")
+        }, 3000);
+      dispatch(updateStatus("idel"));
+    } else {
+      if (authInitialData.status == "failed") {
+        setShowErrorAlert({
+          isShow: true,
+          message: authInitialData.error,
+        }),
+          setTimeout(() => {
+            setShowErrorAlert({
+              isShow: false,
+              message: "",
+            });
+          }, 3000);
+         dispatch(updateStatus("idel"));
+
+      }
+    }
+  }, [authInitialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form submitted");
+    const { password , confirmPassword} = e.target;
+    dispatch(resetPassword({password : password.value , confirmPassword : confirmPassword.value, resetPasswordToken : token}))
   };
 
   //this animation for resetPasswordWrapper
   useEffect(() => {
     setTimeout(() => {
-      const resetPasswordWrapper = document.querySelector(".resetPasswordWrapper");
+      const resetPasswordWrapper = document.querySelector(
+        ".resetPasswordWrapper"
+      );
       resetPasswordWrapper.classList.add("popUp");
     }, 50);
-  },[]);
+  }, []);
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3">
         <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input resetPasswordWrapper relative overflow-hidden p-5">
-          <div
-            className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 "
-           
-          >
+          <div className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 ">
             <div>
               <h2 className="font-bold text-3xl dark:text-green-700 text-center">
                 Reset password
@@ -45,42 +88,23 @@ export default function ResetPassword() {
               <form className="my-8" onSubmit={handleSubmit}>
                 <LabelInputContainer className="mb-4">
                   <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                  />
+                  <Input id="password" type="password" />
                 </LabelInputContainer>
                 <LabelInputContainer>
                   <Label htmlFor="confirmPassword">Confirm password</Label>
                   <Input id="confirmPassword" type="password" />
                 </LabelInputContainer>
 
-               
-
                 <div className="flex flex-col gap-2 mt-4">
                   <button
                     className="relative group/btn block  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
-                    onClick={() => {
-                        setShowSuccessAlert({
-                          isShow: true,
-                          message:
-                            "this is success message.",
-                        }),
-                        setTimeout(() => {
-                          setShowSuccessAlert({
-                            isShow: false,
-                            message: "",
-                          });
-                        }, 3000);
-                      }}
+                   
                   >
                     Sign in &rarr;
                     <BottomGradient />
                   </button>
                 </div>
-
-                
               </form>
             </div>
           </div>
@@ -89,6 +113,11 @@ export default function ResetPassword() {
           showSuccessAlert={showSuccessAlert}
           setShowSuccessAlert={setShowSuccessAlert}
           message={showSuccessAlert.message}
+        />
+        <ErrorAlert
+          showErrorAlert={showErrorAlert}
+          setShowSuccessAlert={setShowErrorAlert}
+          message={showErrorAlert.message}
         />
       </div>
     </>

@@ -16,12 +16,17 @@ import SuccessAlert from "../components/SuccessAlert";
 import axios from "axios";
 
 export default function Signin() {
+  
   const [showOauthContainer , setShowOauthContainer] = useState(false)
   const [showSignInContainer , setShowSignInContainer] = useState(true)
   const [showErrorAlert, setShowErrorAlert] = useState({
     isShow: false,
     message: "",
   });
+  const [userData , setUserData] = useState({
+    email : "",
+    password : ""
+  })
   const [showSuccessAlert, setShowSuccessAlert] = useState({
     isShow: false,
     message: "",
@@ -61,23 +66,37 @@ export default function Signin() {
       dispatch(updateStatus("idel"));
     } else {
       if (authInitialData.status == "failed") {
+        if(authInitialData.error == "Verify your email."){
+         sessionStorage.setItem('fromRedirect', true);
+          setTimeout(()=>{
+            navigate(`/verify-email?email=${userData.email}`);
+          },1000)
+        }
+       
         setShowErrorAlert({
           isShow: true,
           message: authInitialData.error,
         }),
+      
           setTimeout(() => {
             setShowErrorAlert({
               isShow: false,
               message: "",
             });
           }, 3000);
+      dispatch(updateStatus("idel"));
+
       }
     }
   }, [authInitialData]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { name, email, password } = e.target;
+    const { email, password } = e.target;
+    setUserData({
+      email : email.value,
+      password : password.value
+    })
     dispatch(
       signin({
         email: email.value,
@@ -86,7 +105,6 @@ export default function Signin() {
         userAgent : navigator.userAgent
       })
     );
-    console.log(ip)
   };
 
   const onClickOauth = () => {
