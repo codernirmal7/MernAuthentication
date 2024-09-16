@@ -99,7 +99,7 @@ export const sendResetPasswordEmail = async (email,resetPasswordToken,name) => {
     from: sender,
     to: email,
     subject: "Reset Password",
-    html: resetPasswordTemplate(`${process.env.FRONTSIDE_URL}/auth/reset-password:${resetPasswordToken}`,name),
+    html: resetPasswordTemplate(`${process.env.FRONTSIDE_URL}/auth/reset-password/${resetPasswordToken}`,name),
     category: "Reset Password!",
   };
   try {

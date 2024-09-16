@@ -28,7 +28,7 @@ authRouter.route("/user-data").get(verifyToken, userData);
 
 authRouter.route("/sign-out").get(signout)
 
-authRouter.route("/isLogged").get(verifyToken,isLogged)
+authRouter.route("/islogged").get(verifyToken,isLogged)
 
 
 //Google OAuth login

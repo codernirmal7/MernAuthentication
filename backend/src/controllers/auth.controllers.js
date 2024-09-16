@@ -185,6 +185,9 @@ const signin = async (req, res) => {
       });
     }
 
+    user.lastTimeLogin = new Date.now()
+    user.save()
+
     res.cookie("token", user.generateAccessToken(), {
       // httpOnly: true,
       maxAge: Date.now() + 7 * 24 * 60 * 60 * 1000, //7days
@@ -292,6 +295,14 @@ const resetPassword = async (req, res) => {
         statusCode: 400,
       });
     }
+    if (password.length < 8) {
+      return res.status(400).json({
+        success: false,
+        error: "Password length must be greater 8.",
+        statusCode: 400,
+      });
+    }
+  
     if (confirmPassword !== password) {
       return res.status(400).json({
         success: false,

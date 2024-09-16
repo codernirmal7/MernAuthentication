@@ -7,6 +7,7 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: "String",
       required: [true, "Name is required"],
+      minlength : [3, "Name length should be greater than 3"]
     },
     email: {
       type: String,
@@ -43,6 +44,9 @@ const UserSchema = new mongoose.Schema(
     loginCode: String,
     loginCodeExpiresAt: Date,
 
+    lastTimeLogin :{
+      type: Date,
+    },
     isDisable: {
       type: Boolean,
       required: true,
