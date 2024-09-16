@@ -28,6 +28,12 @@ export function Signup() {
     isShow: false,
     message: "",
   });
+  useEffect(()=>{
+    if(authInitialData.isLoggedIn){
+       navigate("/")
+    }
+  },[authInitialData.isLoggedIn])
+
 
   useEffect(() => {
     if (authInitialData.status == "succeeded") {

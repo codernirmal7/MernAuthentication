@@ -67,7 +67,7 @@ const resetPassword = createAsyncThunk("/api/auth/reset-password", async (data) 
   }
 });
 
-const checkIsLogged = createAsyncThunk("/api/auth/islogged", async () => {
+const checkIsLoggedIn = createAsyncThunk("/api/auth/islogged", async () => {
   try {
     const response = await axios.get("/api/auth/islogged")
     return response.data.message;
@@ -80,7 +80,7 @@ const checkIsLogged = createAsyncThunk("/api/auth/islogged", async () => {
 
 const initialState = {
   data: [],
-  isLogged : false,
+  isLoggedIn : false,
   status: "idel", // 'idle' | 'loading' | 'succeeded' | 'failed'
   error: null,
 };
@@ -155,15 +155,15 @@ const authSlice = createSlice({
         state.status = "failed";
         state.error = action.error.message;
       })
-      .addCase(checkIsLogged.pending, (state) => {
+      .addCase(checkIsLoggedIn.pending, (state) => {
         state.error = null
       })
-      .addCase(checkIsLogged.fulfilled, (state) => {
-        state.isLogged = true
+      .addCase(checkIsLoggedIn.fulfilled, (state) => {
+        state.isLoggedIn = true
         state.error = null
       })
-      .addCase(checkIsLogged.rejected, (state, action) => {
-        state.isLogged = false
+      .addCase(checkIsLoggedIn.rejected, (state, action) => {
+        state.isLoggedIn = false
         state.error = action.error.message;
       })
   },
@@ -171,4 +171,4 @@ const authSlice = createSlice({
 
 export const { updateStatus } = authSlice.actions;
 export default authSlice.reducer;
-export {signup,verifyEmail,signin, foregtPassword, resetPassword}
+export {signup,verifyEmail,signin, foregtPassword, resetPassword, checkIsLoggedIn}

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import { Label } from "../components/ui/lable";
 import { Input } from "../components/ui/input";
 import { cn } from "../components/lib/utils";
@@ -35,6 +34,14 @@ export default function Signin() {
   const authInitialData = useSelector((state) => state.auth);
 
   const navigate = useNavigate()
+
+  useEffect(()=>{
+    if(authInitialData.isLoggedIn){
+       navigate("/")
+    }
+  },[authInitialData.isLoggedIn])
+
+
 
   const [ip, setIp] = useState('');
   useEffect(() => {
@@ -118,7 +125,7 @@ export default function Signin() {
   };
 
  
-  //this animation for signinWrapper
+  //This animation for signinWrapper
   useEffect(() => {
     setTimeout(() => {
       const signinWrapper = document.querySelector(".signinWrapper");

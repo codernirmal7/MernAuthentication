@@ -66,7 +66,7 @@ export default function VerificationEmail() {
           isShow: false,
           message: "",
         });
-        navigate("/");
+        navigate("/signin");
       }, 3000);
       setInputBorder("none");
     } else {
