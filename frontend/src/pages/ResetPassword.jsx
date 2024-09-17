@@ -78,7 +78,7 @@ export default function ResetPassword() {
         <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input resetPasswordWrapper relative overflow-hidden p-5">
           <div className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 ">
             <div>
-              <h2 className="font-bold text-3xl dark:text-green-700 text-center">
+              <h2 className="font-bold text-3xl text-green-600 text-center">
                 Reset password
               </h2>
               <p className="text-neutral-600 text-sm max-w-sm mt-2 text-center dark:text-neutral-300">
@@ -97,7 +97,7 @@ export default function ResetPassword() {
 
                 <div className="flex flex-col gap-2 mt-4">
                   <button
-                    className="relative group/btn flex justify-center items-center  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
+                    className="relative group/btn flex justify-center items-center  bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
                    
                   >

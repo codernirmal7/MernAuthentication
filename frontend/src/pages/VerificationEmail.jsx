@@ -254,7 +254,7 @@ export default function VerificationEmail() {
                     </g>{" "}
                   </g>
                 </svg>
-                <h1 className="text-3xl  font-bold dark:text-green-700">
+                <h1 className="text-3xl  font-bold text-green-600">
                   Verify Your Email
                 </h1>
                 <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
@@ -280,7 +280,7 @@ export default function VerificationEmail() {
                   })}
                 </div>
                 <button
-                  className="relative group/btn flex justify-center items-center bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full mt-4 text-white rounded-md h-10 font-medium"
+                  className="relative group/btn flex justify-center items-center bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 w-full text-white rounded-md h-10 font-medium"
                   type="submit"
                   onClick={onCodeSubmit}
                 >
@@ -296,7 +296,7 @@ export default function VerificationEmail() {
 
                 <Link
                   to="/signup"
-                  className="relative group/btn  flex items-center justify-center bg-gray-400 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                  className="relative group/btn   flex items-center justify-center bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 w-full text-white rounded-md h-10 font-medium "
                 >
                   Back to signup &rarr;
                 </Link>

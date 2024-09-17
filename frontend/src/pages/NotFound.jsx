@@ -14,7 +14,7 @@ export default function NotFound() {
             The page you’re looking for doesn’t exist.
           </p>
           <Link
-            className="relative group/btn  flex select-none justify-center items-center mt-4 bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
+            className="relative group/btn  flex select-none justify-center items-center mt-4 bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 w-full text-white rounded-md h-10 font-medium"
            to="/"
           >
             Go to home page &rarr;

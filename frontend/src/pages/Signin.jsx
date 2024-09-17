@@ -5,7 +5,7 @@ import { cn } from "../components/lib/utils";
 import {
   IconBrandGithub,
   IconBrandGoogle,
-  IconBrandOnlyfans,
+  
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -156,7 +156,7 @@ export default function Signin() {
             }}
           >
             <div>
-              <h2 className="font-bold text-xl dark:text-green-700">
+              <h2 className="font-bold text-2xl text-green-600">
                 Welcome to Back!
               </h2>
               <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
@@ -180,15 +180,15 @@ export default function Signin() {
                 <div className="mb-4">
                   <Link
                     to="/forget-password"
-                    className="text-green-600 hover:underline font-semibold text-sm"
+                    className="text-green-500 hover:underline font-semibold text-sm"
                   >
                     Forget password?
                   </Link>
                 </div>
 
-                <div className="flex flex-col gap-2 ">
+                <div className="flex flex-col gap-3 ">
                   <button
-                    className="relative group/btn flex justify-center items-center  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
+                    className="relative group/btn flex justify-center items-center  bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
                   >
                     
@@ -203,7 +203,7 @@ export default function Signin() {
                   </button>
 
                   <button
-                    className="relative group/btn  block bg-gray-400 w-full text-white rounded-md h-10 font-medium shadow-[0px_1px_0px_0px_#ffffff40_inset,0px_-1px_0px_0px_#ffffff40_inset] dark:shadow-[0px_1px_0px_0px_var(--zinc-800)_inset,0px_-1px_0px_0px_var(--zinc-800)_inset]"
+                    className="relative group/btn  block bg-gradient-to-r from-gray-500 to-gray-700 hover:from-gray-600 hover:to-gray-800 w-full text-white rounded-md h-10 font-medium "
                     onClick={onClickOauth}
                     type="button"
                   >
@@ -213,11 +213,11 @@ export default function Signin() {
                 </div>
 
                 <div className="mt-3">
-                  <span className="text-black dark:text-neutral-300 text-sm">
+                  <span className="text-white text-sm">
                     Need an account ?{" "}
                     <Link
                       to="/signup"
-                      className="text-green-600 hover:underline font-semibold"
+                      className="text-green-500 hover:underline font-semibold"
                     >
                       Sign up
                     </Link>
@@ -235,7 +235,7 @@ export default function Signin() {
                 : "translateX(700px)",
             }}
           >
-            <h2 className="font-bold text-xl dark:text-green-700">
+            <h2 className="font-bold text-2xl text-green-600">
               Welcome to Back!
             </h2>
             <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
@@ -259,13 +259,12 @@ export default function Signin() {
             >
               <IconBrandGoogle
                 className="h-4 w-4 text-neutral-800 "
-                onClick={() => dispatch(signInOrSignUpWithGoogle)}
               />
               <span className="text-neutral-700 text-sm">Google</span>
               <BottomGradient />
             </a>
             <button
-              className="relative group/btn bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium "
+              className="relative group/btn bg-gradient-to-r from-green-500 to-green-700 hover:from-green-600 hover:to-green-800 w-full text-white rounded-md h-10 font-medium"
               onClick={onClickBack}
             >
               Back &rarr;

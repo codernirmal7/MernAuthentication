@@ -76,7 +76,7 @@ function App() {
 
   return (
     <>
-      <div className="bg-[url('https://e1.pxfuel.com/desktop-wallpaper/837/252/desktop-wallpaper-3d-nature-night-background-nature-night.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center relative overflow-hidden">
+      <div className="bg-[url('/image.png')] bg-no-repeat bg-cover bg-center flex items-center justify-center relative overflow-hidden">
         {/* <FloatingShape
           color="bg-green-500"
           size="w-64 h-64"
