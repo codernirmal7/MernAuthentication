@@ -17,7 +17,8 @@ module.exports = {
       },
       colors : {
         "brand" : "#047857"
-      }
+      },
+     
     },
   },
   plugins: [addVariablesForColors],

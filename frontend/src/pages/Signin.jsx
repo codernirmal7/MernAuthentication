@@ -9,22 +9,25 @@ import {
 } from "@tabler/icons-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { checkIsLoggedIn, signin, updateStatus } from "../redux/slices/authSlice";
+import {
+  checkIsLoggedIn,
+  signin,
+  updateStatus,
+} from "../redux/slices/authSlice";
 import ErrorAlert from "../components/ErrorAlert";
 import SuccessAlert from "../components/SuccessAlert";
 
 export default function Signin() {
-  
-  const [showOauthContainer , setShowOauthContainer] = useState(false)
-  const [showSignInContainer , setShowSignInContainer] = useState(true)
+  const [showOauthContainer, setShowOauthContainer] = useState(false);
+  const [showSignInContainer, setShowSignInContainer] = useState(true);
   const [showErrorAlert, setShowErrorAlert] = useState({
     isShow: false,
     message: "",
   });
-  const [userData , setUserData] = useState({
-    email : "",
-    password : ""
-  })
+  const [userData, setUserData] = useState({
+    email: "",
+    password: "",
+  });
   const [showSuccessAlert, setShowSuccessAlert] = useState({
     isShow: false,
     message: "",
@@ -32,39 +35,33 @@ export default function Signin() {
   const dispatch = useDispatch();
   const authInitialData = useSelector((state) => state.auth);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(checkIsLoggedIn())
-  }, [authInitialData.isLoggedIn])
-  
+    dispatch(checkIsLoggedIn());
+  }, [authInitialData.isLoggedIn]);
 
-  useEffect(()=>{
-    if(authInitialData.isLoggedIn){
-       navigate("/")
+  useEffect(() => {
+    if (authInitialData.isLoggedIn) {
+      navigate("/");
     }
-  },[authInitialData.isLoggedIn])
+  }, [authInitialData.isLoggedIn]);
 
-
-
-  const [ip, setIp] = useState('');
+  const [ip, setIp] = useState("");
 
   useEffect(() => {
     const fetchIp = async () => {
       try {
-        const response = await fetch('https://api.ipify.org?format=json');
+        const response = await fetch("https://api.ipify.org?format=json");
         const data = await response.json();
         setIp(data.ip);
       } catch (error) {
-        console.error('Error fetching IP address:', error);
+        console.error("Error fetching IP address:", error);
       }
     };
 
     fetchIp();
   }, []);
-
-
-
 
   useEffect(() => {
     if (authInitialData.status === "succeeded") {
@@ -77,81 +74,87 @@ export default function Signin() {
           isShow: false,
           message: "",
         });
-        navigate('/');
+        navigate("/");
       }, 1000);
       dispatch(updateStatus("idle"));
-
-    } else{
-     if (authInitialData.status === "failed") {
-      setShowErrorAlert({
-        isShow: true,
-        message: authInitialData.error,
-      });
-      setTimeout(() => {
+    } else {
+      if (authInitialData.status === "failed") {
         setShowErrorAlert({
-          isShow: false,
-          message: "",
+          isShow: true,
+          message: authInitialData.error,
         });
-        if (authInitialData.error === "Verify your email.") {
-          sessionStorage.setItem('fromRedirect', 'true');
-          navigate(`/verify-email?email=${userData.email}`);
-        }
-      }, 1000);
-      dispatch(updateStatus("idle"));
+        setTimeout(() => {
+          setShowErrorAlert({
+            isShow: false,
+            message: "",
+          });
+          if (authInitialData.error === "Verify your email.") {
+            sessionStorage.setItem("fromRedirect", "true");
+            navigate(`/verify-email?email=${userData.email}`);
+          }
+        }, 1000);
+        dispatch(updateStatus("idle"));
+      }
     }
-  }
   }, [authInitialData]);
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const { email, password } = e.target;
     setUserData({
-      email : email.value,
-      password : password.value
-    })
+      email: email.value,
+      password: password.value,
+    });
     dispatch(
       signin({
         email: email.value,
         password: password.value,
-        ipAddress : ip,
-        userAgent : navigator.userAgent
+        ipAddress: ip,
+        userAgent: navigator.userAgent,
       })
     );
   };
 
   const onClickOauth = () => {
-      setShowOauthContainer(true)
-      setShowSignInContainer(false)
+    setShowOauthContainer(true);
+    setShowSignInContainer(false);
   };
 
   const onClickBack = () => {
-    setShowOauthContainer(false)
-    setShowSignInContainer(true)
+    setShowOauthContainer(false);
+    setShowSignInContainer(true);
   };
 
- 
   //This animation for signinWrapper
+
   useEffect(() => {
-    setTimeout(() => {
-      const signinWrapper = document.querySelector(".signinWrapper");
-      signinWrapper.classList.add("popUp");
-    }, 50);
-  },[]);
+      setTimeout(() => {
+        const signinWrapper = document.querySelector(".signinWrapper");
+        signinWrapper.classList.add("popUp");
+      }, 50);
+  }, []);
+  
   return (
     <>
-      <div className="w-full h-screen flex justify-center  items-center px-3"
-      >
-        <div className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input signinWrapper relative overflow-hidden p-5"
-         style={{height : 
-
-          showSignInContainer ? "30rem"
-          :
-          showOauthContainer ? "25rem"
-          :
-          "33rem"
-        }}
+      <div className="w-full h-screen flex justify-center  items-center px-3">
+        <div
+          className="max-w-md w-full mx-auto flex justify-center rounded-2xl shadow-input signinWrapper relative overflow-hidden p-5"
+          style={{
+            height: showSignInContainer
+              ? "30rem"
+              : showOauthContainer
+              ? "20rem"
+              : "33rem",
+          }}
         >
-          <div className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 " style={{transform : showSignInContainer ? "translateX(0px)" : "translateX(-700px)"}}>
+          <div
+            className="w-full  p-4 px-2 bsolute transition ease-in-out delay-100 "
+            style={{
+              transform: showSignInContainer
+                ? "translateX(0px)"
+                : "translateX(-700px)",
+            }}
+          >
             <div>
               <h2 className="font-bold text-xl dark:text-green-700">
                 Welcome to Back!
@@ -160,7 +163,7 @@ export default function Signin() {
                 Locate the "Sign in" button on the website. Clicking on it will
                 take you in home page.
               </p>
-              <form className="my-8" onSubmit={handleSubmit}> 
+              <form className="my-8" onSubmit={handleSubmit}>
                 <LabelInputContainer className="mb-4">
                   <Label htmlFor="email">Email Address</Label>
                   <Input
@@ -175,21 +178,27 @@ export default function Signin() {
                 </LabelInputContainer>
 
                 <div className="mb-4">
-                  
-                    <Link
-                      to="/forget-password"
-                      className="text-green-600 hover:underline font-semibold text-sm"
-                    >
-                      Forget password?
-                    </Link>
+                  <Link
+                    to="/forget-password"
+                    className="text-green-600 hover:underline font-semibold text-sm"
+                  >
+                    Forget password?
+                  </Link>
                 </div>
 
                 <div className="flex flex-col gap-2 ">
                   <button
-                    className="relative group/btn block  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
+                    className="relative group/btn flex justify-center items-center  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
                   >
-                    Sign in &rarr;
+                    
+                    {authInitialData.status == "loading" ? (
+                      <>
+                        <div class="loading"></div>
+                      </>
+                    ) : (
+                      <>Sign in &rarr;</>
+                    )}
                     <BottomGradient />
                   </button>
 
@@ -203,7 +212,6 @@ export default function Signin() {
                   </button>
                 </div>
 
-               
                 <div className="mt-3">
                   <span className="text-black dark:text-neutral-300 text-sm">
                     Need an account ?{" "}
@@ -217,50 +225,45 @@ export default function Signin() {
                 </div>
               </form>
             </div>
-
-
-           
           </div>
 
-          <div className="w-full flex-col px-6 space-y-4 p-4 absolute transition ease-in-out delay-100 oauthContainer" style={{transform : showOauthContainer ? "translateX(0px)" : "translateX(700px)"}}>
-          <h2 className="font-bold text-xl dark:text-green-700">
-                 Welcome to Back!
-              </h2>
-              <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-              You'll be redirected to your chosen service's login page. Allow the app to access your account information.
-              </p>
-           
-            <button
+          <div
+            className="w-full flex-col px-6 space-y-4 p-4 absolute transition ease-in-out delay-100 oauthContainer"
+            style={{
+              transform: showOauthContainer
+                ? "translateX(0px)"
+                : "translateX(700px)",
+            }}
+          >
+            <h2 className="font-bold text-xl dark:text-green-700">
+              Welcome to Back!
+            </h2>
+            <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+              You'll be redirected to your chosen service's login page. Allow
+              the app to access your account information.
+            </p>
+
+            <a
+              href="/api/auth/github"
               className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50"
               type="submit"
             >
               <IconBrandGithub className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">
-                GitHub
-              </span>
+              <span className="text-neutral-700 text-sm">GitHub</span>
               <BottomGradient />
-            </button>
-            <button
+            </a>
+            <a
+              href="/api/auth/google"
               className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50"
               type="submit"
             >
-              <IconBrandGoogle className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">
-                Google
-              </span>
+              <IconBrandGoogle
+                className="h-4 w-4 text-neutral-800 "
+                onClick={() => dispatch(signInOrSignUpWithGoogle)}
+              />
+              <span className="text-neutral-700 text-sm">Google</span>
               <BottomGradient />
-            </button>
-            <button
-              className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 "
-              type="submit"
-            >
-              <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">
-                OnlyFans
-              </span>
-              <BottomGradient />
-            </button>
-
+            </a>
             <button
               className="relative group/btn bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium "
               onClick={onClickBack}

@@ -76,8 +76,8 @@ function App() {
 
   return (
     <>
-      <div className="bg-gradient-to-br from-gray-900 via-green-900 to-emerald-700 flex items-center justify-center relative overflow-hidden">
-        <FloatingShape
+      <div className="bg-[url('https://e1.pxfuel.com/desktop-wallpaper/837/252/desktop-wallpaper-3d-nature-night-background-nature-night.jpg')] bg-no-repeat bg-cover bg-center flex items-center justify-center relative overflow-hidden">
+        {/* <FloatingShape
           color="bg-green-500"
           size="w-64 h-64"
           top="-5%"
@@ -97,7 +97,7 @@ function App() {
           top="40%"
           left="-10%"
           delay={2}
-        />
+        /> */}
 
       <RouterProvider router={router} />
 

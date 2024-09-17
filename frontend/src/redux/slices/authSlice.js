@@ -95,6 +95,8 @@ const signOut = createAsyncThunk("/api/auth/sign-out", async () => {
 });
 
 
+
+
 const initialState = {
   data: [],
   isLoggedIn : false,
@@ -199,10 +201,12 @@ const authSlice = createSlice({
       })
       .addCase(signOut.fulfilled, (state) => {
         state.error = null
+        state.isLoggedIn = false
       })
       .addCase(signOut.rejected, (state, action) => {
         state.error = action.error.message;
       })
+     
   },
 });
 

@@ -36,7 +36,7 @@ export default function ForgetPassword() {
             isShow: false,
             message: "",
           });
-        }, 3000);
+        }, 1000);
       dispatch(updateStatus("idel"));
     } else {
       if (authInitialData.status == "failed") {
@@ -96,10 +96,16 @@ export default function ForgetPassword() {
 
                 <div className="flex flex-col gap-2 ">
                   <button
-                    className="relative group/btn block  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
+                    className="relative group/btn flex justify-center items-center  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium"
                     type="submit"
                   >
-                    Send &rarr;
+                    {authInitialData.status == "loading" ? (
+                      <>
+                        <div class="loading"></div>
+                      </>
+                    ) : (
+                      <>Send &rarr;</>
+                    )}
                     <BottomGradient />
                   </button>
 

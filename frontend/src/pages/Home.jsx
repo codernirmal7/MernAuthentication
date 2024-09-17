@@ -12,25 +12,27 @@ export default function Home() {
 
   useEffect(() => {
     dispatch(checkIsLoggedIn())
-  }, [authInitialData.isLoggedIn])
+  }, [])
   
 
   useEffect(() => {
     if (authInitialData.isLoggedIn) {
       dispatch(getUserData());
-      dispatch(updateStatus("idle"));
     } else {
-      dispatch(updateStatus("idle"));
       navigate("/signin");
     }
   }, [authInitialData.isLoggedIn]);
 
   useEffect(() => {
-    setTimeout(() => {
-      const homeWrapper = document.querySelector(".homeWrapper");
-      homeWrapper.classList.add("popUp");
-    }, 50);
+    if(authInitialData.isLoggedIn){
+      setTimeout(() => {
+        const homeWrapper = document.querySelector(".homeWrapper");
+        homeWrapper.classList.add("popUp");
+      }, 50);
+    }
+   
   }, []);
+
   return (
     <>
       <div className="w-full h-screen flex justify-center  items-center px-3 ">

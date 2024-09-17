@@ -110,7 +110,7 @@ export function Signup() {
             height: showSignUpContainer
               ? "35rem"
               : showOauthContainer
-              ? "25rem"
+              ? "20rem"
               : "33rem",
           }}
         >
@@ -157,7 +157,7 @@ export function Signup() {
                   >
                     {authInitialData.status == "loading" ? (
                       <>
-                        <div class="loading">Loading...</div>
+                        <div class="loading"></div>
                       </>
                     ) : (
                       <>Sign up &rarr;</>
@@ -205,30 +205,27 @@ export function Signup() {
               the app to access your account information.
             </p>
 
-            <button
+            <a
+              href="/api/auth/github"
               className="relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50"
               type="submit"
             >
               <IconBrandGithub className="h-4 w-4 text-neutral-800 " />
               <span className="text-neutral-700 text-sm">GitHub</span>
               <BottomGradient />
-            </button>
-            <button
+            </a>
+            <a
+              href="/api/auth/google"
               className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50"
               type="submit"
             >
-              <IconBrandGoogle className="h-4 w-4 text-neutral-800 " />
+              <IconBrandGoogle
+                className="h-4 w-4 text-neutral-800 "
+                onClick={() => dispatch(signInOrSignUpWithGoogle)}
+              />
               <span className="text-neutral-700 text-sm">Google</span>
               <BottomGradient />
-            </button>
-            <button
-              className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 "
-              type="submit"
-            >
-              <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 " />
-              <span className="text-neutral-700 text-sm">OnlyFans</span>
-              <BottomGradient />
-            </button>
+            </a>
 
             <button
               className="relative group/btn  bg-gradient-to-br from-brand via-green-700 to-emerald-900 hover:from-brand/80 hover:via-green-700/80 hover:to-emerald-900/80 w-full text-white rounded-md h-10 font-medium "
