@@ -157,7 +157,7 @@ export function Signup() {
                   >
                     {authInitialData.status == "loading" ? (
                       <>
-                        <div class="loading"></div>
+                        <div className="loading"></div>
                       </>
                     ) : (
                       <>Sign up &rarr;</>

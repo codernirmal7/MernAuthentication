@@ -194,7 +194,7 @@ export default function Signin() {
                     
                     {authInitialData.status == "loading" ? (
                       <>
-                        <div class="loading"></div>
+                        <div className="loading"></div>
                       </>
                     ) : (
                       <>Sign in &rarr;</>

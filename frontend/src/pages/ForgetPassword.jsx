@@ -101,7 +101,7 @@ export default function ForgetPassword() {
                   >
                     {authInitialData.status == "loading" ? (
                       <>
-                        <div class="loading"></div>
+                        <div className="loading"></div>
                       </>
                     ) : (
                       <>Send &rarr;</>

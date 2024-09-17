@@ -103,7 +103,7 @@ export default function ResetPassword() {
                   >
                      {authInitialData.status == "loading" ? (
                       <>
-                        <div class="loading"></div>
+                        <div className="loading"></div>
                       </>
                     ) : (
                       <>Change password &rarr;</>

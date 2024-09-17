@@ -286,7 +286,7 @@ export default function VerificationEmail() {
                 >
                   {authInitialData.status == "loading" ? (
                       <>
-                        <div class="loading"></div>
+                        <div className="loading"></div>
                       </>
                     ) : (
                       <>Verify email &rarr;</>

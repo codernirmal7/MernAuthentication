@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { checkIsLoggedIn, getUserData, signOut, updateStatus } from "../redux/slices/authSlice";
+import { checkIsLoggedIn, getUserData, signOut } from "../redux/slices/authSlice";
 
 import { useNavigate } from "react-router-dom";
 
@@ -32,6 +32,9 @@ export default function Home() {
     }
    
   }, []);
+
+  const lastTimeLogin = authInitialData.data.lastTimeLogin ? new Date(authInitialData.data.lastTimeLogin).toLocaleString() : 'Date not available';
+  const accountCreatedAt = authInitialData.data.accountCreatedAt ? new Date(authInitialData.data.accountCreatedAt).toLocaleString() : 'Date not available';
 
   return (
     <>
@@ -65,11 +68,11 @@ export default function Home() {
                 <div>
                   <ul>
                     <li className="text-gray-300">
-                      Last Login : {authInitialData.data?.lastTimeLogin}
+                      Last Login : {lastTimeLogin}
                     </li>
                     <li className="text-gray-300">
                       Account created at :{" "}
-                      {authInitialData.data?.accountCreatedAt}
+                      {accountCreatedAt}
                     </li>
                   </ul>
                 </div>
