@@ -16,8 +16,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/",(req,res)=>{
-    res.send("<a href='/api/auth/google'>google</a><br/><a href='/api/auth/github'>github</a>")
+  res.send("<a href='/api/auth/google'>Login with Google</a>")
 })
+
 app.use("/api/auth",authRouter)
 
 

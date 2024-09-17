@@ -17,7 +17,6 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, "Password is required"],
     },
     isVerified: {
       type: Boolean,
@@ -61,7 +60,13 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-
+UserSchema.pre("save",function(next){
+  if (this.googleId || this.githubId) {
+    // If using social login, do not require password
+    this.isVerified = true; // Remove the password if social ID exists
+  }
+  next();
+})
 
 UserSchema.methods.generateAccessToken = function () {
   return jwt.sign(
@@ -70,6 +75,8 @@ UserSchema.methods.generateAccessToken = function () {
       email: this.email,
       name: this.name,
       isDisable: this.isDisable,
+      lastTimeLogin : this.lastTimeLogin,
+      accountCreatedAt: this.createdAt,
     },
     process.env.JWT_PRIVATE_KEY,
     { expiresIn: "7d" }

@@ -12,6 +12,13 @@ import otpGenerator from "otp-generator";
 const signup = async (req, res) => {
   const { name, email, password } = req.body;
   try {
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        error: "Password is required.",
+        statusCode: 400,
+      });
+    }
     if (password.length < 8) {
       return res.status(400).json({
         success: false,
@@ -146,7 +153,13 @@ const signin = async (req, res) => {
 
   try {
     const { email, password, ipAddress, userAgent } = req.body;
-
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        error: "Password is required.",
+        statusCode: 400,
+      });
+    }
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
@@ -185,8 +198,9 @@ const signin = async (req, res) => {
       });
     }
 
-    user.lastTimeLogin = new Date.now()
+    user.lastTimeLogin = Date.now()
     user.save()
+
 
     res.cookie("token", user.generateAccessToken(), {
       // httpOnly: true,
@@ -195,6 +209,7 @@ const signin = async (req, res) => {
 
     sendLoginNotification(user.email, userAgent, ipAddress, user.name);
 
+   
     return res.status(200).json({
       success: true,
       message: "Signin successful.",

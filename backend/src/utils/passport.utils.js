@@ -22,9 +22,12 @@ async (accessToken, refreshToken, profile, done) => {
       user = await User.create({
         googleId: profile.id,
         name: profile.displayName,
-        email: profile.emails[0].value
+        email: profile.emails[0].value,
+        lastTimeLogin : Date.now()
       });
       await user.save()
+      sendWellcomeEmail(profile.emails[0].value);
+
     }
     return done(null, user);
   } catch (err) {
@@ -46,14 +49,17 @@ async (accessToken, refreshToken, profile, done) => {
     if (user && !user.githubId && !user.googleId) {
       // User exists but has signed up with local strategy (email/password)
       return done(null, false, { message: "Please sign in with your password because you signed up with email/password." });
-    } 
+    }
     if(!user){
       user = await User.create({
         githubId: profile.id,
         name: profile.displayName,
-        email: profile.emails[0].value
+        email: profile.emails[0].value,
+        lastTimeLogin : Date.now()
       });
       await user.save()
+      sendWellcomeEmail(profile.emails[0].value);
+
     }
     return done(null, user);
   } catch (err) {
