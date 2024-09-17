@@ -6,8 +6,6 @@ import session from "express-session"
 
 const app = express()
 
-
-
 app.use(express.json())
 app.use(cookieParser())
 
@@ -20,24 +18,6 @@ app.get("/",(req,res)=>{
 })
 
 app.use("/api/auth",authRouter)
-
-
-app.get('/profile', (req, res) => {
-    if (!req.isAuthenticated) {
-      return res.redirect('/');
-    }
-    res.send(`Hello, ${req.user.name}`);
-  });
-  
-  // Logout
-  app.get('/logout', (req, res) => {
-    req.logout((err) => {
-      if (err) {
-        return next(err);
-      }
-      res.redirect('/');
-    });
-  });
 
 
 export default app

@@ -3,6 +3,7 @@ import passport from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import {User} from "../model/user.model.js";
 import { Strategy as GitHubStrategy } from "passport-github2";
+import { sendWellcomeEmail } from "../nodemailer/emails.js";
 
 //Google
 
@@ -26,6 +27,8 @@ async (accessToken, refreshToken, profile, done) => {
         lastTimeLogin : Date.now()
       });
       await user.save()
+     
+  
       sendWellcomeEmail(profile.emails[0].value);
 
     }
@@ -58,6 +61,8 @@ async (accessToken, refreshToken, profile, done) => {
         lastTimeLogin : Date.now()
       });
       await user.save()
+      
+  
       sendWellcomeEmail(profile.emails[0].value);
 
     }
