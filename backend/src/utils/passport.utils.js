@@ -27,8 +27,6 @@ async (accessToken, refreshToken, profile, done) => {
         lastTimeLogin : Date.now()
       });
       await user.save()
-     
-  
       sendWellcomeEmail(profile.emails[0].value);
 
     }
