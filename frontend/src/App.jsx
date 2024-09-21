@@ -76,8 +76,8 @@ function App() {
 
   return (
     <>
-      {/* <div className="bg-[url('/image.png')] bg-no-repeat bg-cover bg-center flex items-center justify-center relative overflow-hidden">
-       */}
+      {/* <div className="bg-[url('/image4.webp')] bg-no-repeat bg-cover bg-center flex items-center justify-center relative overflow-hidden"> */}
+      
              <div className="bg-gradient-to-br from-gray-900 via-green-900 to-emerald-700 flex items-center justify-center relative overflow-hidden">
 
         <FloatingShape

@@ -20,24 +20,24 @@
 }
 .signupWrapper {
   transition: all 0.18s ease;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transform: scale(0);
   transition: all .5s ease ;
 }
 
 .signinWrapper{
   transition: all 0.18s ease;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transform: scale(0);
   transition: all .5s ease ;
 }
@@ -45,12 +45,12 @@
 .verificationEmailWrapper{
   height: 28rem;
   transition: all 0.18s ease;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transform: scale(0);
   transition: all .5s ease ;
   
@@ -59,12 +59,12 @@
 .forgetPasswordWrapper{
   height: 23rem;
   transition: all 0.18s ease;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transform: scale(0);
   transition: all .5s ease ;
   
@@ -73,12 +73,12 @@
 .resetPasswordWrapper{
   height: 25rem;
   transition: all 0.18s ease;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transform: scale(0);
   transition: all .5s ease ;
 }
@@ -86,12 +86,12 @@
 .homeWrapper{
   height: 27rem;
   transition: all 0.18s ease;
-  background: rgba(0, 0, 0, 0.45);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
-  border: 2px solid rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.1);
   transform: scale(0);
   transition: all .5s ease ;
 }
